@@ -1,0 +1,28 @@
+<div class="web-lab">
+  <div class="editor">
+    <div class="tabs" role="tablist">
+      @for (t of tabs(); track t) {
+        <button type="button" role="tab" class="tab" [class.on]="tab() === t" [attr.aria-selected]="tab() === t" (click)="tab.set(t)">
+          {{ t === 'html' ? 'HTML' : t === 'css' ? 'CSS' : 'JS' }}
+        </button>
+      }
+    </div>
+    <textarea
+      class="code"
+      dir="ltr"
+      spellcheck="false"
+      autocomplete="off"
+      [attr.aria-label]="tab().toUpperCase()"
+      [value]="typed()[tab()]"
+      (input)="edit(tab(), $event)"
+    ></textarea>
+    <div class="flex flex-wrap items-center gap-2">
+      <button type="button" class="seq-btn primary" (click)="run()">{{ 'book.webRun' | translate }}</button>
+      <button type="button" class="seq-btn" (click)="reset()">{{ 'book.webReset' | translate }}</button>
+    </div>
+  </div>
+  <div class="preview">
+    <b class="text-xs text-muted">{{ 'book.webPreview' | translate }}</b>
+    <iframe #frame class="frame" sandbox="allow-scripts" [title]="'book.webPreview' | translate"></iframe>
+  </div>
+</div>

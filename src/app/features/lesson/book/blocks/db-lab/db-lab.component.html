@@ -1,0 +1,70 @@
+@let v = view();
+<div class="lab">
+  @if (show() === 'parts') {
+    <div class="flex flex-wrap justify-center gap-2">
+      <button type="button" class="pick" [class.on]="part() === 'record'" [attr.aria-pressed]="part() === 'record'" (click)="part.set('record')">{{ 'book.db.record' | translate }}</button>
+      <button type="button" class="pick" [class.on]="part() === 'field'" [attr.aria-pressed]="part() === 'field'" (click)="part.set('field')">{{ 'book.db.field' | translate }}</button>
+    </div>
+  } @else {
+    <div class="flex flex-wrap justify-center gap-2">
+      @for (m of modes; track m) {
+        <button type="button" class="pick" [class.on]="mode() === m" [attr.aria-pressed]="mode() === m" (click)="mode.set(m)">{{ 'book.db.mode.' + m | translate }}</button>
+      }
+    </div>
+  }
+
+  <div class="tables">
+    <div class="wrap">
+      <span class="cap">{{ 'book.db.students' | translate }}</span>
+      <table class="tbl">
+        <thead>
+          <tr>
+            @for (c of v.columns; track c.key) {
+              <th [class.gone]="!c.kept" [class.added]="c.added" [class.lit]="show() === 'parts' && part() === 'field' && c.key === litCol">{{ 'book.db.' + c.key | translate }}</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (r of v.rows; track r.id; let i = $index) {
+            <tr [class.gone]="!r.kept" [class.lit]="show() === 'parts' && part() === 'record' && i === litRow">
+              @for (c of v.columns; track c.key) {
+                <td [class.gone]="!c.kept" [class.added]="c.added" [class.lit]="show() === 'parts' && part() === 'field' && c.key === litCol">
+                  @switch (c.key) {
+                    @case ('id') { <span class="font-mono ltr-num">{{ r.id }}</span> }
+                    @case ('name') { {{ language.pick(r.name) }} }
+                    @case ('club') { <span class="font-mono ltr-num">{{ r.club }}</span> }
+                    @case ('activity') { {{ r.activity ? language.pick(r.activity) : '' }} }
+                  }
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (show() === 'ops' && mode() === 'join') {
+      <div class="wrap">
+        <span class="cap">{{ 'book.db.clubs' | translate }}</span>
+        <table class="tbl">
+          <thead>
+            <tr><th>{{ 'book.db.club' | translate }}</th><th class="added">{{ 'book.db.activity' | translate }}</th></tr>
+          </thead>
+          <tbody>
+            @for (c of clubs(); track c.id) {
+              <tr><td><span class="font-mono ltr-num">{{ c.id }}</span></td><td class="added">{{ language.pick(c.name) }}</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+
+  <div class="note">
+    @if (show() === 'parts') {
+      {{ 'book.db.' + part() + 'Note' | translate }}
+    } @else {
+      {{ 'book.db.note.' + mode() | translate: { rows: v.rowCount, cols: v.colCount, club: club() } }}
+    }
+  </div>
+</div>

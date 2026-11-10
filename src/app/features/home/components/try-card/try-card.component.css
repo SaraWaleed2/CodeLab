@@ -1,0 +1,10 @@
+.card {
+  box-shadow: var(--cl-shadow-deep);
+}
+.meter {
+  background: linear-gradient(to right, var(--cl-primary), #f7c460);
+  transition: width 0.4s ease;
+}
+.meter.over {
+  background: var(--cl-bad);
+}

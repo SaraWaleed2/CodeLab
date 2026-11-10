@@ -1,0 +1,81 @@
+:host {
+  display: contents;
+}
+
+.lab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 20px;
+  background: var(--cl-surface);
+  border: 1.5px dashed var(--cl-primary);
+}
+
+.shapes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  width: 100%;
+  max-width: 560px;
+}
+
+.shape {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 10px 8px;
+  border-radius: 16px;
+  border: 1.5px solid var(--cl-line);
+  background: var(--cl-card);
+  color: var(--cl-ink);
+  font: inherit;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.shape:hover {
+  transform: translateY(-2px);
+}
+.shape:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--cl-primary) 50%, transparent);
+}
+.shape.on {
+  border-color: #d9a13a;
+  background: var(--cl-sun-soft);
+}
+
+.shape svg {
+  width: 100%;
+  max-width: 130px;
+  height: auto;
+}
+.bx rect {
+  fill: var(--cl-surface);
+  stroke: var(--cl-muted);
+  stroke-width: 1.5;
+}
+.ln {
+  fill: none;
+  stroke: var(--cl-muted);
+  stroke-width: 1.5;
+}
+.head {
+  fill: color-mix(in srgb, var(--cl-primary) 25%, transparent);
+}
+.shape.on .bx rect {
+  fill: #f7c460;
+  stroke: #d9a13a;
+}
+.shape.on .ln {
+  stroke: #b07f1f;
+}
+
+.name {
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.35;
+}

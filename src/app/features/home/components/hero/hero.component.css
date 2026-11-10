@@ -1,0 +1,103 @@
+.hero {
+  position: relative;
+  isolation: isolate;
+  padding: 72px 0 88px;
+}
+
+/* Calm background: dot grid, two fixed soft lights, ten faint 0/1 digits drifting up very slowly. */
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  /* Fade the lights out before the section ends, so they never stop at a hard horizontal line. */
+  mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+}
+.dots {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(var(--cl-dot) 1.2px, transparent 1.3px);
+  background-size: 22px 22px;
+  mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+}
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--cl-primary);
+}
+.blob.green {
+  width: 420px;
+  height: 420px;
+  top: -60px;
+  inset-inline-start: -80px;
+  opacity: 0.16;
+  filter: blur(70px);
+}
+.blob.low {
+  width: 420px;
+  height: 420px;
+  bottom: 40px;
+  inset-inline-end: -160px;
+  opacity: 0.1;
+  filter: blur(90px);
+}
+.digits span {
+  position: absolute;
+  bottom: -40px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  color: var(--cl-ink);
+  opacity: 0.07;
+  animation: drift linear infinite;
+}
+@keyframes drift {
+  from { transform: translateY(0); }
+  to { transform: translateY(-760px); }
+}
+.digits span:nth-child(1) { left: 6%; font-size: 22px; animation-duration: 46s; animation-delay: -4s; }
+.digits span:nth-child(2) { left: 15%; font-size: 16px; animation-duration: 58s; animation-delay: -30s; }
+.digits span:nth-child(3) { left: 26%; font-size: 26px; animation-duration: 52s; animation-delay: -12s; }
+.digits span:nth-child(4) { left: 37%; font-size: 18px; animation-duration: 64s; animation-delay: -40s; }
+.digits span:nth-child(5) { left: 48%; font-size: 20px; animation-duration: 50s; animation-delay: -22s; }
+.digits span:nth-child(6) { left: 58%; font-size: 15px; animation-duration: 60s; animation-delay: -8s; }
+.digits span:nth-child(7) { left: 67%; font-size: 24px; animation-duration: 54s; animation-delay: -35s; }
+.digits span:nth-child(8) { left: 77%; font-size: 17px; animation-duration: 62s; animation-delay: -18s; }
+.digits span:nth-child(9) { left: 86%; font-size: 21px; animation-duration: 48s; animation-delay: -44s; }
+.digits span:nth-child(10) { left: 94%; font-size: 16px; animation-duration: 66s; animation-delay: -26s; }
+
+/* Title words appear one by one out of a blur. */
+.word {
+  display: inline-block;
+  margin-inline-end: 0.28em;
+  opacity: 0;
+  filter: blur(10px);
+  transform: translateY(8px);
+  animation: word-in 0.7s ease forwards;
+}
+@keyframes word-in {
+  to { opacity: 1; filter: blur(0); transform: none; }
+}
+
+/* Shine sweeping over the main button on hover. */
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+.btn-shine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.4) 50%, transparent 70%);
+  transform: translateX(-130%);
+  transition: transform 0.75s ease;
+  pointer-events: none;
+}
+.btn-shine:hover::after {
+  transform: translateX(130%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .digits { display: none; }
+  .word { opacity: 1; filter: none; transform: none; }
+}

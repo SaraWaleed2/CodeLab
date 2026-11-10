@@ -1,0 +1,338 @@
+.stage {
+  position: relative;
+  isolation: isolate;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 22px 24px 56px;
+}
+.glow {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+.glow i {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  background: var(--cl-primary);
+  opacity: 0.1;
+}
+.glow i:nth-child(1) { width: 520px; height: 520px; top: -120px; inset-inline-end: -160px; }
+.glow i:nth-child(2) { width: 420px; height: 420px; bottom: -140px; inset-inline-start: -140px; opacity: 0.07; }
+
+/* ---------- the book: a stack of paper with a spine ---------- */
+.book {
+  position: relative;
+  /* Taller on tall screens, so most pages fit without scrolling. */
+  height: clamp(640px, calc(100vh - 220px), 800px);
+  perspective: 2800px;
+  border-radius: 24px 8px 8px 24px; /* spine on the right in Arabic */
+  outline: none;
+}
+:host-context([dir='ltr']) .book {
+  border-radius: 8px 24px 24px 8px;
+}
+.book:focus-visible {
+  outline: 3px solid #f7c460;
+  outline-offset: 6px;
+}
+
+.edge {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--cl-paper-edge);
+  border: 1px solid var(--cl-line);
+}
+.edge.e2 { transform: translate(-12px, 10px); }
+.edge.e1 { transform: translate(-6px, 5px); }
+:host-context([dir='ltr']) .edge.e2 { transform: translate(12px, 10px); }
+:host-context([dir='ltr']) .edge.e1 { transform: translate(6px, 5px); }
+
+/* A sheet turns around the spine. Arabic: spine right, page swings to the right. English: mirrored. */
+.sheet {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  transform-style: preserve-3d;
+  transform-origin: right center;
+  transition:
+    transform 0.9s cubic-bezier(0.45, 0.05, 0.25, 1),
+    visibility 0s 0s;
+}
+:host-context([dir='ltr']) .sheet {
+  transform-origin: left center;
+}
+.sheet.turned {
+  transform: rotateY(180deg);
+  visibility: hidden;
+  transition:
+    transform 0.9s cubic-bezier(0.45, 0.05, 0.25, 1),
+    visibility 0s 0.9s;
+}
+:host-context([dir='ltr']) .sheet.turned {
+  transform: rotateY(-180deg);
+}
+
+.front,
+.back {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  backface-visibility: hidden;
+}
+.front {
+  display: flex;
+  flex-direction: column;
+  padding: 26px 44px 150px;
+  overflow: hidden;
+  background: var(--cl-paper);
+  border: 1px solid var(--cl-line);
+  box-shadow: 0 40px 80px -44px rgb(10 30 34 / 0.5);
+}
+.back {
+  transform: rotateY(180deg);
+  background: linear-gradient(90deg, var(--cl-paper-edge), var(--cl-paper));
+  border: 1px solid var(--cl-line);
+}
+/* Shadow near the spine. */
+.front::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  right: 0;
+  width: 60px;
+  background: linear-gradient(to left, rgb(0 0 0 / 0.1), transparent);
+  pointer-events: none;
+}
+:host-context([dir='ltr']) .front::before {
+  right: auto;
+  left: 0;
+  background: linear-gradient(to right, rgb(0 0 0 / 0.1), transparent);
+}
+/* Shadow that darkens the page while it turns. */
+.front::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgb(0 0 0 / 0.35), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.9s ease;
+  pointer-events: none;
+}
+:host-context([dir='ltr']) .front::after {
+  background: linear-gradient(to left, rgb(0 0 0 / 0.35), transparent 70%);
+}
+.sheet.turned .front::after {
+  opacity: 1;
+}
+
+.page-body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  /* Still scrolls with wheel, touch and keys, but without a visible scrollbar. */
+  scrollbar-width: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.page-body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Cover */
+.cover .front {
+  background: var(--cl-primary);
+  color: var(--cl-on-primary);
+  border-color: transparent;
+}
+.cover-body {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+  padding-inline: 10px;
+}
+.cover-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 80px;
+  font-weight: 700;
+  line-height: 1;
+  direction: ltr;
+  text-align: start;
+}
+.cover-bits {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px;
+  letter-spacing: 0.5em;
+  opacity: 0.55;
+  direction: ltr;
+  text-align: start;
+}
+
+/* Folded corner at the outer bottom (left in Arabic). */
+.corner {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 40;
+  width: 64px;
+  height: 64px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+:host-context([dir='ltr']) .corner {
+  left: auto;
+  right: 0;
+}
+.fold {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(45deg, var(--cl-paper-edge) 0 48%, rgb(0 0 0 / 0.18) 50%, transparent 52%);
+  border-bottom-left-radius: 24px;
+  transform-origin: bottom left;
+  transition: transform 0.25s ease;
+}
+:host-context([dir='ltr']) .fold {
+  background: linear-gradient(-45deg, var(--cl-paper-edge) 0 48%, rgb(0 0 0 / 0.18) 50%, transparent 52%);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 24px;
+  transform-origin: bottom right;
+}
+.corner:hover .fold {
+  transform: scale(1.35);
+}
+
+/* Bito at the bottom of the page. */
+.page-bito {
+  position: absolute;
+  inset-inline: 40px;
+  bottom: 22px;
+  z-index: 45;
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+.bito-btn {
+  flex: none;
+  width: 70px;
+  height: 88px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  border-radius: 16px;
+}
+.bubble {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 16px;
+  border-radius: 20px;
+  background: var(--cl-card);
+  border: 1px solid var(--cl-line);
+  box-shadow: var(--cl-shadow);
+  animation: bubble-in 0.4s 0.45s ease both;
+}
+:host-context(.dark) .bubble {
+  background: var(--cl-surface);
+}
+@keyframes bubble-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+.mini-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid var(--cl-line);
+  background: var(--cl-card);
+  color: var(--cl-ink);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition: transform 0.15s, background-color 0.2s;
+}
+.mini-btn:hover {
+  transform: translateY(-1px);
+  background: var(--cl-surface);
+}
+.mini-btn.sun {
+  background: var(--cl-sun-soft);
+  border-color: color-mix(in srgb, #f7c460 60%, var(--cl-line));
+}
+
+/* Pager under the book. */
+.nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 20px;
+  border-radius: 14px;
+  border: 1px solid var(--cl-line);
+  background: var(--cl-card);
+  color: var(--cl-ink);
+  font: inherit;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: transform 0.18s, box-shadow 0.25s;
+}
+.nav-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+.nav-btn:active:not(:disabled) {
+  transform: translateY(1px) scale(0.97);
+}
+.nav-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.nav-btn.primary {
+  background: var(--cl-primary);
+  color: var(--cl-on-primary);
+  border-color: transparent;
+  box-shadow: var(--cl-glow);
+}
+.dot {
+  width: 26px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+.dot i {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: var(--cl-line);
+  transition: width 0.3s, background-color 0.3s;
+}
+.dot.seen i {
+  background: color-mix(in srgb, var(--cl-primary) 45%, var(--cl-line));
+}
+.dot.on i {
+  width: 26px;
+  background: var(--cl-primary);
+}
+
+@media (max-width: 640px) {
+  .front { padding: 20px 20px 180px; }
+  .page-bito { inset-inline: 16px; }
+  .book { height: 760px; }
+}

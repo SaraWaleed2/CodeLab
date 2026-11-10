@@ -1,0 +1,68 @@
+.game {
+  box-shadow: var(--cl-shadow-deep);
+}
+
+.qd { width: 12px; height: 12px; border-radius: 999px; background: var(--cl-line); transition: background-color 0.3s, transform 0.3s; }
+.qd.cur { background: #f7c460; transform: scale(1.35); }
+.qd.ok { background: var(--cl-primary); }
+.stat { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; background: var(--cl-surface); color: var(--cl-muted); font-size: 13px; }
+.stat b { font-family: 'JetBrains Mono', monospace; color: var(--cl-ink); }
+
+.card {
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  border: 2px solid var(--cl-line);
+  background: var(--cl-surface);
+  color: var(--cl-ink);
+  font: inherit;
+  font-size: 15.5px;
+  font-weight: 600;
+  line-height: 1.5;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.2s, background-color 0.2s, opacity 0.2s;
+}
+.card:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: var(--cl-primary);
+}
+.card.meaning {
+  background: var(--cl-card);
+  font-weight: 500;
+  font-size: 15px;
+}
+.card.sel {
+  border-color: #f7c460;
+  background: var(--cl-sun-soft);
+  box-shadow: 0 0 0 3px rgb(247 196 96 / 0.35);
+}
+.card.done {
+  border-color: var(--cl-ok);
+  background: var(--cl-ok-soft);
+  opacity: 0.85;
+  cursor: default;
+}
+.card.shake {
+  border-color: var(--cl-bad);
+  background: var(--cl-bad-soft);
+  animation: nudge 0.4s ease;
+}
+@keyframes nudge {
+  0%, 100% { transform: translateX(0); }
+  30% { transform: translateX(-6px); }
+  60% { transform: translateX(5px); }
+}
+
+.btn {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 50px; padding: 0 20px;
+  border-radius: 14px; border: 1px solid var(--cl-line); background: var(--cl-card); color: var(--cl-ink);
+  font: inherit; font-weight: 600; font-size: 16px; cursor: pointer; transition: transform 0.18s ease;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn.primary { background: var(--cl-primary); color: var(--cl-on-primary); border-color: transparent; box-shadow: var(--cl-glow); }

@@ -1,0 +1,34 @@
+<svg
+  class="bito"
+  [class.talking]="talking()"
+  [class.happy]="happy()"
+  [class.enter]="enter()"
+  viewBox="0 0 120 150"
+  aria-hidden="true"
+>
+  <ellipse class="shadow" cx="60" cy="144" rx="26" ry="4" fill="#0B1A1E" />
+  <g class="tilt">
+    <g class="jump">
+      <g class="float">
+        <line x1="60" y1="17" x2="60" y2="31" stroke="#34B386" stroke-width="4" stroke-linecap="round" />
+        <circle class="antenna" cx="60" cy="12" r="6" fill="#F7C460" />
+        <rect x="22" y="100" width="10" height="24" rx="5" fill="#34B386" transform="rotate(12 27 102)" />
+        <g class="wave"><rect x="94" y="76" width="10" height="28" rx="5" fill="#34B386" /></g>
+        <rect x="36" y="96" width="48" height="36" rx="12" fill="#FFFFFF" stroke="#34B386" stroke-width="4" />
+        <circle cx="60" cy="114" r="5" fill="#F7C460" />
+        <rect x="8" y="50" width="12" height="26" rx="5" fill="#34B386" />
+        <rect x="100" y="50" width="12" height="26" rx="5" fill="#34B386" />
+        <rect x="18" y="30" width="84" height="66" rx="20" fill="#FFFFFF" stroke="#34B386" stroke-width="4" />
+        <rect x="28" y="40" width="64" height="46" rx="13" fill="#1E2E37" />
+        @if (happy()) {
+          <path d="M40 60 Q47 51 54 60" stroke="#9EF0E4" stroke-width="4" fill="none" stroke-linecap="round" />
+          <path d="M66 60 Q73 51 80 60" stroke="#9EF0E4" stroke-width="4" fill="none" stroke-linecap="round" />
+        } @else {
+          <ellipse class="eye" cx="47" cy="58" rx="6" ry="7" fill="#9EF0E4" />
+          <ellipse class="eye" cx="73" cy="58" rx="6" ry="7" fill="#9EF0E4" />
+        }
+        <path class="mouth" d="M50 72 Q60 80 70 72" stroke="#9EF0E4" stroke-width="3.5" fill="none" stroke-linecap="round" />
+      </g>
+    </g>
+  </g>
+</svg>

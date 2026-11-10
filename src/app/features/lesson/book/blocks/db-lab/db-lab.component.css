@@ -1,0 +1,112 @@
+:host {
+  display: contents;
+}
+
+.lab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 20px;
+  background: var(--cl-surface);
+  border: 1.5px dashed var(--cl-primary);
+}
+
+.pick {
+  min-height: 44px;
+  padding: 6px 14px;
+  border-radius: 12px;
+  border: 1.5px solid var(--cl-line);
+  background: var(--cl-card);
+  color: var(--cl-ink);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.pick:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--cl-primary) 50%, transparent);
+}
+.pick.on {
+  background: #f7c460;
+  border-color: #d9a13a;
+  color: #2a2208;
+}
+
+.tables {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+}
+.wrap {
+  display: grid;
+  gap: 4px;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.wrap::-webkit-scrollbar {
+  display: none;
+}
+.cap {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cl-muted);
+}
+
+.tbl {
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1.5px solid var(--cl-line);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--cl-card);
+  font-size: 14px;
+}
+.tbl th,
+.tbl td {
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--cl-line);
+  text-align: center;
+  white-space: nowrap;
+  transition: opacity 0.2s ease, background 0.2s ease;
+}
+.tbl tbody tr:last-child td {
+  border-bottom: 0;
+}
+.tbl th {
+  background: var(--cl-primary-soft);
+  font-weight: 700;
+}
+
+/* Taken away by a selection (row) or a projection (column): still there, but faded and struck through. */
+.tbl .gone,
+.tbl .gone td {
+  opacity: 0.3;
+  text-decoration: line-through;
+}
+/* Brought in by a join. */
+.tbl .added {
+  background: var(--cl-ok-soft);
+  color: var(--cl-ok);
+  font-weight: 600;
+}
+/* The record or field lit in "parts". */
+.tbl .lit,
+.tbl tr.lit td {
+  background: #f7c460;
+  color: #2a2208;
+  font-weight: 700;
+}
+
+.note {
+  max-width: 560px;
+  text-align: center;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--cl-muted);
+}

@@ -1,0 +1,38 @@
+<section class="pb-[72px] pt-6">
+  <div class="mx-auto max-w-[1200px] px-6">
+    <div class="reveal mb-7">
+      <h2 class="m-0 text-[clamp(26px,3.2vw,36px)] font-bold leading-tight">{{ 'home.ways.title' | translate }}</h2>
+      <p class="mt-1.5 max-w-[560px] text-muted">{{ 'home.ways.sub' | translate }}</p>
+    </div>
+
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      @for (way of ways(); track way.method; let i = $index) {
+        <ng-template #body>
+          <span class="grid size-12 place-items-center rounded-[14px]" [class]="i === 1 ? 'bg-sun-soft text-[#9a6b12] dark:text-sun' : 'bg-primary-soft text-primary'">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path [attr.d]="way.icon" /></svg>
+          </span>
+          <h3 class="mb-0 mt-1 text-lg font-bold">{{ 'methods.' + way.method | translate }}</h3>
+          <p class="m-0 text-sm text-muted">{{ 'home.ways.' + way.method | translate }}</p>
+          @if (way.link) {
+            <span class="mt-auto inline-flex items-center gap-1.5 text-sm font-semibold text-primary">
+              {{ 'home.ways.go.' + way.method | translate }}
+              <svg class="flip-rtl" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+            </span>
+          } @else {
+            <span class="mt-auto text-[13px] text-muted">{{ 'common.soon' | translate }}</span>
+          }
+        </ng-template>
+
+        @if (way.link; as link) {
+          <a [routerLink]="link" class="reveal flex flex-col gap-2.5 rounded-3xl border border-line bg-card p-[22px] text-ink no-underline transition hover:-translate-y-1 hover:shadow-soft">
+            <ng-container [ngTemplateOutlet]="body" />
+          </a>
+        } @else {
+          <div class="reveal flex flex-col gap-2.5 rounded-3xl border border-line bg-card p-[22px] transition hover:-translate-y-1 hover:shadow-soft">
+            <ng-container [ngTemplateOutlet]="body" />
+          </div>
+        }
+      }
+    </div>
+  </div>
+</section>

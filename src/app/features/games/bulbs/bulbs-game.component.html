@@ -1,0 +1,91 @@
+<div class="mx-auto max-w-[1200px] animate-page-in px-6 pb-36 pt-7">
+  <nav class="mb-3.5 flex flex-wrap items-center gap-2.5 text-sm text-muted" [attr.aria-label]="'book.breadcrumb' | translate">
+    <a routerLink="/" class="text-muted">{{ 'nav.home' | translate }}</a>
+    <span>/</span>
+    <span>{{ 'game.crumb' | translate: { id: lesson().id } }}</span>
+  </nav>
+
+  <div class="grid items-start gap-6 lg:grid-cols-[minmax(0,360px)_minmax(0,1fr)]">
+    <aside class="flex flex-col gap-3.5 rounded-[26px] border border-line bg-card p-6">
+      <span class="self-start rounded-full bg-primary-soft px-3 py-1 text-[13px] font-medium text-primary">{{ 'game.crumb' | translate: { id: lesson().id } }}</span>
+      <h1 class="m-0 text-[26px] font-bold leading-snug">{{ 'game.sideTitle' | translate }}</h1>
+      <p class="m-0 text-[15px] text-muted">{{ 'game.sideText' | translate }}</p>
+      <div class="flex flex-col gap-3 rounded-[20px] bg-surface p-4">
+        <div class="grid grid-cols-4 gap-1.5" dir="ltr">
+          @for (m of [{ v: 8, on: 1 }, { v: 4, on: 1 }, { v: 2, on: 0 }, { v: 1, on: 1 }]; track m.v) {
+            <span class="rounded-xl border py-1.5 text-center font-mono text-[13px]" [class]="m.on ? 'border-sun bg-sun text-on-sun' : 'border-line bg-card'">
+              <b class="block text-base">{{ m.on }}</b>{{ m.v }}
+            </span>
+          }
+        </div>
+        <div class="text-center font-mono text-xl font-bold ltr-num">13 = 8 + 4 + 1 = <em class="not-italic text-primary">(1101)₂</em></div>
+      </div>
+      <p class="m-0 text-[15px] text-muted">{{ 'game.tip' | translate }}</p>
+      <span class="text-[12.5px] text-muted">{{ 'game.source' | translate }}</span>
+      <a routerLink="../book" class="inline-flex items-center gap-2 font-semibold text-primary no-underline hover:underline">
+        <svg class="flip-rtl" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" /></svg>
+        {{ 'game.backToBook' | translate }}
+      </a>
+    </aside>
+
+    <section class="game relative overflow-hidden rounded-[26px] border border-line bg-card p-[26px]" [attr.aria-label]="'game.title' | translate">
+      <app-confetti [burst]="burst()" />
+
+      <div class="mb-2.5 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-1.5" [attr.aria-label]="'game.progress' | translate">
+          @for (r of results(); track $index; let i = $index) {
+            <span class="qd" [class.cur]="!finished() && i === index()" [class.ok]="r === true" [class.no]="r === false"></span>
+          }
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <span class="stat">{{ 'game.question' | translate }} <b>{{ index() + 1 }}/{{ targets().length }}</b></span>
+          <span class="stat">{{ 'game.streak' | translate }} <b>{{ streak() }}</b></span>
+        </div>
+      </div>
+
+      @if (!finished()) {
+        <div class="mb-[18px] mt-2.5 text-center">
+          <small class="block text-sm text-muted">{{ 'game.make' | translate }}</small>
+          <div class="font-mono text-[clamp(64px,10vw,104px)] font-bold leading-[1.05] ltr-num">{{ target().n }}</div>
+          <span class="mt-1 inline-block rounded-full bg-primary-soft px-3 py-0.5 text-[12.5px] text-primary">{{ language.pick(target().source) }}</span>
+        </div>
+
+        <div class="grid grid-cols-8 gap-1 pt-2 sm:gap-2.5" dir="ltr">
+          @for (v of values; track v; let i = $index) {
+            <app-bulb size="lg" [value]="v" [on]="bits()[i]" [hint]="hintIndex() === i" (toggled)="toggle(i)" [label]="('home.try.bulb' | translate) + ' ' + v" />
+          }
+        </div>
+
+        <div class="mt-[18px] grid grid-cols-1 gap-2.5 sm:grid-cols-3">
+          <div class="out"><small>{{ 'game.binary' | translate }}</small><b>{{ binary() }}<sub>2</sub></b></div>
+          <div class="out"><small>{{ 'game.decimal' | translate }}</small><b>{{ sum() }}<sub>10</sub></b></div>
+          <div class="out"><small>{{ 'game.hex' | translate }}</small><b>{{ hex() }}<sub>16</sub></b></div>
+        </div>
+
+        @if (feedback() === 'ok') {
+          <div class="fb ok">{{ 'game.correct' | translate: { target: target().n, binary: binary() } }}</div>
+        } @else if (feedback() === 'no') {
+          <div class="fb no">{{ 'game.notYet' | translate: { sum: sum(), target: target().n } }}</div>
+        }
+
+        <div class="mt-[18px] flex flex-wrap gap-2.5">
+          <button type="button" class="btn primary" (click)="check()">{{ 'game.check' | translate }}</button>
+          <button type="button" class="btn" (click)="next()">
+            {{ 'game.next' | translate }}
+            <svg class="flip-rtl" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+          </button>
+          <button type="button" class="btn sun" (click)="askBito()">{{ 'game.ask' | translate }}</button>
+        </div>
+      } @else {
+        <div class="flex flex-col items-center gap-3 px-2.5 py-8 text-center">
+          <h2 class="m-0 text-[28px] font-bold">{{ 'game.doneTitle' | translate: { count: targets().length } }}</h2>
+          <p class="m-0 text-muted">{{ 'game.doneText' | translate: { right: rightCount(), total: targets().length } }}</p>
+          <div class="flex flex-wrap justify-center gap-2.5">
+            <button type="button" class="btn primary" (click)="restart()">{{ 'game.again' | translate }}</button>
+            <a routerLink="../challenge" class="btn no-underline">{{ 'game.toCode' | translate }}</a>
+          </div>
+        </div>
+      }
+    </section>
+  </div>
+</div>

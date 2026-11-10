@@ -1,0 +1,57 @@
+<section class="game relative overflow-hidden rounded-[26px] border border-line bg-card p-[26px]" [attr.aria-label]="'order.title' | translate">
+  <app-confetti [burst]="burst()" />
+
+  @if (!finished()) {
+    @let r = round();
+    <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-1.5" [attr.aria-label]="'game.progress' | translate">
+        @for (x of rounds(); track $index; let i = $index) {
+          <span class="qd" [class.cur]="i === roundIndex()" [class.ok]="i < roundIndex()"></span>
+        }
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <span class="stat">{{ 'sort.round' | translate }} <b>{{ roundIndex() + 1 }}/{{ rounds().length }}</b></span>
+        <span class="stat">{{ 'sort.left' | translate }} <b>{{ r.steps.length - placed() }}</b></span>
+      </div>
+    </div>
+
+    <h2 class="m-0 text-[24px] font-bold">{{ language.pick(r.title) }}</h2>
+    <span class="mt-1 inline-block rounded-full bg-primary-soft px-3 py-0.5 text-[12.5px] text-primary">{{ language.pick(r.source) }}</span>
+
+    <!-- The steps already in place, numbered -->
+    <ol class="timeline" [attr.aria-label]="'order.yourOrder' | translate">
+      @for (s of timeline(); track $index; let i = $index) {
+        <li class="placed"><span class="num">{{ i + 1 }}</span><span>{{ language.pick(s) }}</span></li>
+      }
+      @if (!done()) {
+        <li class="slot"><span class="num">{{ placed() + 1 }}</span><span class="text-muted">{{ 'order.next' | translate }}</span></li>
+      }
+    </ol>
+
+    <!-- The steps still to place, shuffled -->
+    @if (!done()) {
+      <p class="mb-2 mt-5 text-center text-[13px] text-muted">{{ 'order.howTo' | translate }}</p>
+      <div class="flex flex-col gap-2.5">
+        @for (i of pool(); track i) {
+          <button type="button" class="step" [class.shake]="wrongStep() === i" (click)="pick(i)">
+            {{ language.pick(r.steps[i]) }}
+          </button>
+        }
+      </div>
+    } @else {
+      <div class="mt-5 flex flex-col items-center gap-3 text-center">
+        <b class="text-xl">{{ 'sort.roundDone' | translate }}</b>
+        <button type="button" class="btn primary" (click)="nextRound()">
+          {{ (roundIndex() + 1 < rounds().length ? 'sort.nextRound' : 'sort.finish') | translate }}
+          <svg class="flip-rtl" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+        </button>
+      </div>
+    }
+  } @else {
+    <div class="flex flex-col items-center gap-3 px-2.5 py-8 text-center">
+      <h2 class="m-0 text-[28px] font-bold">{{ 'order.doneTitle' | translate }}</h2>
+      <p class="m-0 text-muted">{{ 'order.doneText' | translate: { count: rounds().length } }}</p>
+      <button type="button" class="btn primary" (click)="restart()">{{ 'game.again' | translate }}</button>
+    </div>
+  }
+</section>

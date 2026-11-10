@@ -1,0 +1,44 @@
+<div class="card relative overflow-hidden rounded-[28px] border border-line bg-card p-6">
+  <app-confetti [burst]="burst()" />
+
+  <div class="mb-[18px] flex flex-wrap items-center justify-between gap-3">
+    <h2 class="m-0 text-[22px] font-bold">{{ 'home.try.title' | translate }}</h2>
+    <span class="text-sm text-muted">
+      {{ 'home.try.goal' | translate }}
+      <b class="ms-1 font-mono text-xl text-ink ltr-num">{{ target }}</b>
+    </span>
+  </div>
+
+  <div class="grid grid-cols-8 gap-1 pt-1.5 ltr-num sm:gap-2.5" dir="ltr">
+    @for (v of values; track v; let i = $index) {
+      <app-bulb [value]="v" [on]="bits()[i]" (toggled)="toggle(i)" [label]="('home.try.bulb' | translate) + ' ' + v" />
+    }
+  </div>
+
+  <div class="mt-4 grid grid-cols-2 gap-2.5">
+    <div class="rounded-[18px] bg-surface px-[18px] py-3.5">
+      <small class="block text-[12.5px] text-muted">{{ 'home.try.binary' | translate }}</small>
+      <b class="block text-left font-mono text-[28px] tracking-[.04em] ltr-num">{{ binary() }}</b>
+    </div>
+    <div class="rounded-[18px] bg-surface px-[18px] py-3.5">
+      <small class="block text-[12.5px] text-muted">{{ 'home.try.decimal' | translate }}</small>
+      <b class="block text-left font-mono text-[28px] ltr-num">{{ sum() }}</b>
+    </div>
+  </div>
+
+  <div class="mt-3.5 h-2.5 overflow-hidden rounded-full border border-line bg-surface">
+    <i class="meter block h-full rounded-full" [class.over]="over()" [style.width.%]="percent()"></i>
+  </div>
+  <div class="mt-2 flex items-center justify-between gap-2 text-[13px] text-muted">
+    @if (won()) {
+      <span class="font-semibold text-ok">{{ 'home.try.won' | translate }}</span>
+    } @else if (over()) {
+      <span>{{ 'home.try.over' | translate: { extra: sum() - target } }}</span>
+    } @else {
+      <span>{{ 'home.try.progress' | translate: { percent: percent() } }}</span>
+    }
+    <button type="button" (click)="reset()" class="inline-flex min-h-[42px] items-center rounded-xl border border-line bg-card px-3 text-sm text-ink transition hover:-translate-y-px hover:bg-surface active:scale-95">
+      {{ 'home.try.reset' | translate }}
+    </button>
+  </div>
+</div>

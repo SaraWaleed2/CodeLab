@@ -1,0 +1,47 @@
+@let kind = lesson().game?.kind;
+@if (kind === 'bulbs') {
+  <!-- The bulbs game has its own page layout (explanation panel + game). -->
+  <app-bulbs-game [lesson]="lesson()" />
+} @else {
+  <div class="mx-auto max-w-[1200px] animate-page-in px-6 pb-36 pt-7">
+    <nav class="mb-3.5 flex flex-wrap items-center gap-2.5 text-sm text-muted" [attr.aria-label]="'book.breadcrumb' | translate">
+      <a routerLink="/" class="text-muted">{{ 'nav.home' | translate }}</a>
+      <span>/</span>
+      <span>{{ 'book.lesson' | translate: { id: lesson().id } }}: {{ language.pick(lesson().title) }}</span>
+    </nav>
+
+    <div class="grid items-start gap-6 lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)]">
+      <aside class="flex flex-col gap-3.5 rounded-[26px] border border-line bg-card p-6">
+        <span class="self-start rounded-full bg-primary-soft px-3 py-1 text-[13px] font-medium text-primary">{{ 'book.lesson' | translate: { id: lesson().id } }}</span>
+        @if (kind) {
+          <h1 class="m-0 text-[26px] font-bold leading-snug">{{ 'host.' + kind + '.title' | translate }}</h1>
+          <p class="m-0 text-[15px] text-muted">{{ 'host.' + kind + '.text' | translate }}</p>
+        } @else {
+          <h1 class="m-0 text-[26px] font-bold leading-snug">{{ 'host.none.title' | translate }}</h1>
+        }
+        <a routerLink="../book" class="inline-flex items-center gap-2 font-semibold text-primary no-underline hover:underline">
+          <svg class="flip-rtl" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" /></svg>
+          {{ 'game.backToBook' | translate }}
+        </a>
+      </aside>
+
+      @switch (kind) {
+        @case ('sort') {
+          <app-sort-game [lesson]="lesson()" />
+        }
+        @case ('scenarios') {
+          <app-scenario-game [lesson]="lesson()" />
+        }
+        @case ('match') {
+          <app-match-game [lesson]="lesson()" />
+        }
+        @case ('order') {
+          <app-order-game [lesson]="lesson()" />
+        }
+        @default {
+          <p class="rounded-[26px] border border-line bg-card p-8 text-center text-muted">{{ 'host.none.text' | translate }}</p>
+        }
+      }
+    </div>
+  </div>
+}

@@ -1,0 +1,62 @@
+<div class="lab">
+  <div class="shapes">
+    @for (item of items(); track $index) {
+      <button type="button" class="shape" [class.on]="picked() === $index" [attr.aria-pressed]="picked() === $index" (click)="picked.set($index)">
+        @switch (item.shape) {
+          @case ('tree') {
+            <svg viewBox="0 0 120 84" aria-hidden="true">
+              <g class="ln">
+                <path d="M60 16 V26 H30 V40 M60 26 H90 V40 M30 52 V60 H16 V68 M30 60 H44 V68 M90 52 V68" />
+              </g>
+              <g class="bx">
+                <rect x="46" y="4" width="28" height="12" />
+                <rect x="16" y="40" width="28" height="12" /><rect x="76" y="40" width="28" height="12" />
+                <rect x="2" y="68" width="28" height="12" /><rect x="34" y="68" width="22" height="12" /><rect x="76" y="68" width="28" height="12" />
+              </g>
+            </svg>
+          }
+          @case ('network') {
+            <svg viewBox="0 0 120 84" aria-hidden="true">
+              <g class="ln">
+                <path d="M60 16 L22 40 M60 16 L60 40 M60 16 L98 40 M22 52 L16 68 M22 52 L60 68 M60 52 L40 68 M60 52 L98 68 M98 52 L80 68 M98 52 L104 68" />
+              </g>
+              <g class="bx">
+                <rect x="46" y="4" width="28" height="12" />
+                <rect x="8" y="40" width="28" height="12" /><rect x="46" y="40" width="28" height="12" /><rect x="84" y="40" width="28" height="12" />
+                <rect x="2" y="68" width="26" height="12" /><rect x="32" y="68" width="26" height="12" /><rect x="62" y="68" width="26" height="12" /><rect x="92" y="68" width="26" height="12" />
+              </g>
+            </svg>
+          }
+          @case ('tables') {
+            <svg viewBox="0 0 120 84" aria-hidden="true">
+              <g class="bx">
+                <rect x="22" y="4" width="70" height="60" />
+                <rect x="28" y="12" width="70" height="64" />
+              </g>
+              <g class="ln">
+                <path d="M28 25 H98 M28 38 H98 M28 51 H98 M28 64 H98 M46 12 V76 M63 12 V76 M80 12 V76" />
+              </g>
+              <rect class="head" x="28" y="12" width="70" height="13" />
+            </svg>
+          }
+        }
+        <span class="name">{{ language.pick(item.title) }}</span>
+      </button>
+    }
+  </div>
+
+  @let c = current();
+  <div class="grid w-full max-w-[560px] gap-1 rounded-[18px] bg-card px-4 py-3">
+    <b class="text-primary">
+      {{ language.pick(c.title) }}
+      @if (c.en) {
+        <span class="font-mono text-sm font-medium text-muted" dir="ltr">({{ c.en }})</span>
+      }
+    </b>
+    <span class="text-[15px] leading-relaxed">{{ language.pick(c.text) }}</span>
+    @if (c.example) {
+      <span class="text-sm text-muted">{{ language.pick(c.example) }}</span>
+    }
+  </div>
+  <div class="text-center text-sm text-muted">{{ 'book.shapesHint' | translate }}</div>
+</div>

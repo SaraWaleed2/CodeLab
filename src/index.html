@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>كودلاب</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="كودلاب: منهج البرمجة والذكاء الاصطناعي لأولى بكالوريا على هيئة لعبة. مكمّل لمنصة Qureo.">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap">
+  <script>
+    // Apply saved (or system) theme and language before first paint, so there is no flash.
+    (function () {
+      try {
+        var p = JSON.parse(localStorage.getItem('codelab-prefs') || '{}') || {};
+        var dark = typeof p.dark === 'boolean' ? p.dark : matchMedia('(prefers-color-scheme: dark)').matches;
+        var lang = p.lang === 'en' ? 'en' : 'ar';
+        var root = document.documentElement;
+        if (dark) root.classList.add('dark');
+        root.lang = lang;
+        root.dir = lang === 'ar' ? 'rtl' : 'ltr';
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+  <app-root></app-root>
+</body>
+</html>

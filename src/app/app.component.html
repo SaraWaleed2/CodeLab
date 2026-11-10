@@ -1,0 +1,10 @@
+<div [dir]="language.dir()" class="min-h-dvh">
+  <app-scroll-progress />
+  <app-header />
+  <main>
+    <router-outlet />
+  </main>
+  @if (showBitoDock()) {
+    <app-bito-dock />
+  }
+</div>

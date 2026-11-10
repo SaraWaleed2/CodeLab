@@ -1,0 +1,54 @@
+@layer base {
+  /*
+   * Decorations (background lights, Bito's animations, page edges) may poke past the side of the page.
+   * `clip` stops them from ever causing a sideways scrollbar, and unlike `hidden` it keeps the sticky header working.
+   */
+  html,
+  body {
+    overflow-x: clip;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    background: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    transition:
+      background-color 0.35s,
+      color 0.35s;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-sun);
+    outline-offset: 2px;
+  }
+}
+
+/* Numbers and code are always left-to-right, even inside Arabic text. */
+@utility ltr-num {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+/* Arrows and chevrons that should point the other way in RTL. */
+@utility flip-rtl {
+  &:where([dir='rtl'] *) {
+    transform: scaleX(-1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

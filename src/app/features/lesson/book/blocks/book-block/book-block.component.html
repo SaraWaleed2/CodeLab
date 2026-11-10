@@ -1,0 +1,881 @@
+@let b = block();
+@switch (b.type) {
+  @case ('heading') {
+    <h2 class="m-0 text-[30px] font-bold leading-tight">
+      @if (b.text) {
+        {{ language.pick(b.text) }}
+      }
+      @if (b.code) {
+        <span class="font-mono text-primary ltr-num">{{ b.code }}</span>
+      }
+    </h2>
+  }
+
+  @case ('lead') {
+    <p class="m-0 text-lg text-muted">{{ language.pick(b.text) }}</p>
+  }
+
+  @case ('chips') {
+    <div class="flex flex-wrap justify-center gap-2.5">
+      @for (item of b.items; track $index) {
+        <span class="rounded-full border border-line bg-surface px-3.5 py-1.5 text-sm font-medium">{{ language.pick(item) }}</span>
+      }
+    </div>
+  }
+
+  @case ('memo') {
+    <app-memo-sticker>
+      {{ language.pick(b.text) }}
+      @if (b.code) {
+        <span class="font-mono ltr-num">{{ b.code }}</span>
+      }
+    </app-memo-sticker>
+  }
+
+  @case ('tag') {
+    <span class="self-center rounded-full border border-dashed border-muted px-2 py-px text-[11.5px] text-muted">{{ language.pick(b.text) }}</span>
+  }
+
+  @case ('steps') {
+    <div class="stairs flex flex-col items-stretch gap-2 md:flex-row md:items-end">
+      @for (item of b.items; track $index; let i = $index; let last = $last) {
+        <div class="step" [style.--rise.px]="i * 36">
+          <div class="step-body">
+            <b class="text-lg">{{ language.pick(item.title) }}</b>
+            @if (item.en) {
+              <span class="font-mono text-xs text-muted ltr-num">{{ item.en }}</span>
+            }
+            <span class="text-[14.5px] leading-relaxed">{{ language.pick(item.text) }}</span>
+            @if (item.example) {
+              <span class="example">{{ language.pick(item.example) }}</span>
+            }
+          </div>
+          <!-- The step itself: grows with each step, so the cards climb like a staircase. -->
+          <span class="riser" aria-hidden="true">{{ i + 1 }}</span>
+        </div>
+        @if (!last) {
+          <svg class="flip-rtl hidden shrink-0 self-end text-primary md:mb-10 md:block" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+        }
+      }
+    </div>
+  }
+
+  @case ('cards') {
+    <div class="grid gap-3" [class]="b.items.length === 1 ? 'grid-cols-1' : b.items.length === 2 ? 'md:grid-cols-2' : b.items.length === 4 ? 'sm:grid-cols-2' : 'md:grid-cols-3'">
+      @for (item of b.items; track $index) {
+        <div class="term" [class.no]="item.tone === 'no'">
+          <span class="flex items-center gap-2">
+            @if (item.tone === 'no') {
+              <span class="no-mark" aria-hidden="true">✕</span>
+            }
+            @if (item.cc) {
+              <span class="cc-badge"><app-cc-icon [code]="item.cc" [size]="40" /></span>
+            }
+            <b class="text-[16.5px]">{{ language.pick(item.title) }}</b>
+          </span>
+          @if (item.en) {
+            <span class="font-mono text-xs text-muted ltr-num">{{ item.en }}</span>
+          }
+          <span class="text-[14.5px] leading-relaxed">{{ language.pick(item.text) }}</span>
+          @if (item.example) {
+            <span class="example">{{ language.pick(item.example) }}</span>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  @case ('durations') {
+    <div class="flex flex-col gap-2.5">
+      @for (bar of durationBars(); track $index) {
+        <div class="duration">
+          <span class="text-[15px] font-semibold">{{ language.pick(bar.label) }}</span>
+          <span class="track">
+            <i class="fill" [style.width.%]="bar.percent"><b class="font-mono ltr-num">{{ bar.shown }}</b></i>
+          </span>
+          @if (bar.note) {
+            <span class="text-[12.5px] text-muted">{{ language.pick(bar.note) }}</span>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  @case ('pyramid') {
+    <div class="flex flex-col items-center gap-1.5">
+      @for (lv of b.levels; track $index; let i = $index; let last = $last) {
+        <div class="level" [attr.data-tone]="i" [style.--w.%]="levelWidth(i, b.levels.length)">
+          <b class="text-[16.5px]">{{ language.pick(lv.title) }}</b>
+          <span class="text-[14px] leading-relaxed">{{ language.pick(lv.text) }}</span>
+        </div>
+        @if (!last) {
+          <svg class="text-primary" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6" /></svg>
+        }
+      }
+    </div>
+  }
+
+  @case ('sequence') {
+    @if (sequence(); as s) {
+      <div class="grid gap-3 md:grid-cols-2">
+        @for (g of s.groups; track $index) {
+          <div class="seq-group">
+            <b class="text-[15px] text-primary">{{ language.pick(g.who) }}</b>
+            @for (st of g.steps; track st.n) {
+              <div class="seq-step" [class.on]="st.n <= seqStep()" [class.now]="st.n === seqStep()">
+                <span class="seq-n">{{ st.n }}</span>
+                <span class="flex min-w-0 flex-col gap-1">
+                  <span class="text-[14.5px] leading-relaxed">{{ language.pick(st.text) }}</span>
+                  @if (st.sample) {
+                    <code class="seq-sample ltr-num">{{ st.sample }}</code>
+                  }
+                </span>
+              </div>
+            }
+          </div>
+        }
+      </div>
+      <div class="flex justify-center gap-2">
+        <button type="button" class="seq-btn primary" (click)="nextSeq(s.total)" [disabled]="seqStep() >= s.total">{{ 'book.nextStep' | translate }}</button>
+        <button type="button" class="seq-btn" (click)="resetSeq()" [disabled]="seqStep() <= 1">{{ 'book.fromStart' | translate }}</button>
+      </div>
+    }
+  }
+
+  @case ('compare') {
+    <div class="overflow-hidden rounded-[18px] border border-line">
+      <table class="cmp">
+        <thead>
+          <tr>
+            <th></th>
+            @for (c of b.columns; track $index) {
+              <th>{{ language.pick(c) }}</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of b.rows; track $index) {
+            <tr>
+              <th scope="row">{{ language.pick(row.label) }}</th>
+              @for (cell of row.cells; track $index) {
+                <td>{{ language.pick(cell) }}</td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  @case ('bins') {
+    <div class="grid gap-3 md:grid-cols-3">
+      @for (item of b.items; track $index; let i = $index) {
+        <div class="bin" [attr.data-tone]="i">
+          <b class="text-[16.5px]">{{ language.pick(item.title) }}</b>
+          @if (item.en) {
+            <span class="font-mono text-xs opacity-75 ltr-num">{{ item.en }}</span>
+          }
+          <span class="text-[14px]">{{ language.pick(item.text) }}</span>
+          <span class="mt-1 flex flex-wrap gap-1.5">
+            @for (ex of item.examples; track $index) {
+              <span class="bin-chip">{{ language.pick(ex) }}</span>
+            }
+          </span>
+        </div>
+      }
+    </div>
+  }
+
+  @case ('hex-lab') {
+    <div class="lab">
+      <label class="text-sm text-muted" for="hexin">{{ 'book.hexTry' | translate }}</label>
+      <input id="hexin" class="lab-input" dir="ltr" inputmode="numeric" maxlength="32" [value]="hexText()" (input)="onHexInput($event)" />
+      <div class="flex flex-wrap justify-center gap-3" dir="ltr">
+        @for (g of hex(); track $index) {
+          <div class="hexg">
+            <span class="font-mono text-xl tracking-widest">{{ g.bits }}</span>
+            <span class="hexd">{{ g.hex }}</span>
+          </div>
+        }
+      </div>
+      @if (hex().length) {
+        <div class="text-center font-mono text-2xl font-bold ltr-num">({{ hexText() }})<sub class="text-[14px] text-primary">2</sub> = ({{ hexValue() }})<sub class="text-[14px] text-primary">16</sub></div>
+      }
+    </div>
+  }
+
+  @case ('char-lab') {
+    <div class="lab">
+      <label class="text-sm text-muted" for="charin">{{ 'book.charTry' | translate }}</label>
+      <input id="charin" class="lab-input" dir="ltr" maxlength="12" [value]="charText()" (input)="onCharInput($event)" />
+      <div class="flex flex-wrap justify-center gap-3" dir="ltr">
+        @for (c of chars(); track $index) {
+          <div class="hexg">
+            <span class="text-[26px] font-bold">{{ c.ch === ' ' ? '␣' : c.ch }}</span>
+            <span class="hexd">{{ c.hex }}</span>
+            <span class="font-mono text-xs text-muted">{{ c.bits }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  @case ('bin-add') {
+    <div class="lab">
+      <div class="flex flex-wrap items-center justify-center gap-3" dir="ltr">
+        <label class="text-sm text-muted" for="adda">{{ 'book.addFirst' | translate }}</label>
+        <input id="adda" class="lab-input short" inputmode="numeric" maxlength="8" [value]="addA()" (input)="onBinInput('a', $event)" />
+        <label class="text-sm text-muted" for="addb">{{ 'book.addSecond' | translate }}</label>
+        <input id="addb" class="lab-input short" inputmode="numeric" maxlength="8" [value]="addB()" (input)="onBinInput('b', $event)" />
+      </div>
+      @if (addition(); as s) {
+        @if (s.columns.length) {
+          <div class="addsum" dir="ltr">
+            <div class="addrow carry">
+              <span class="addcell"></span>
+              @for (c of s.columns; track $index) {
+                <span class="addcell">{{ c.carryIn ? '1' : '' }}</span>
+              }
+            </div>
+            <div class="addrow">
+              <span class="addcell"></span>
+              @for (c of s.columns; track $index) {
+                <span class="addcell">{{ c.a }}</span>
+              }
+            </div>
+            <div class="addrow line">
+              <span class="addcell">+</span>
+              @for (c of s.columns; track $index) {
+                <span class="addcell">{{ c.b }}</span>
+              }
+            </div>
+            <div class="addrow result">
+              <span class="addcell">{{ s.overflow ? s.result[0] : '' }}</span>
+              @for (c of s.columns; track $index) {
+                <span class="addcell">{{ c.sum }}</span>
+              }
+            </div>
+          </div>
+          <div class="text-center font-mono text-xl font-bold ltr-num">({{ addA() }})<sub class="text-[13px] text-primary">2</sub> + ({{ addB() }})<sub class="text-[13px] text-primary">2</sub> = ({{ s.result }})<sub class="text-[13px] text-primary">2</sub></div>
+        }
+      }
+    </div>
+  }
+
+  @case ('complement-lab') {
+    <div class="lab">
+      <label class="text-sm text-muted" for="compin">{{ 'book.compTry' | translate }}</label>
+      <input id="compin" class="lab-input" dir="ltr" inputmode="numeric" maxlength="8" [value]="compText()" (input)="onBinInput('comp', $event)" />
+      @if (comp().ones) {
+        <div class="grid w-full max-w-[520px] gap-2" dir="ltr">
+          <div class="hexg flex-row! justify-between"><span class="text-sm text-muted">{{ 'book.compStart' | translate }}</span><span class="font-mono text-xl tracking-widest">{{ compText() }}</span></div>
+          <div class="hexg flex-row! justify-between"><span class="text-sm text-muted">{{ 'book.compOnes' | translate }}</span><span class="font-mono text-xl tracking-widest text-primary">{{ comp().ones }}</span></div>
+          <div class="hexg flex-row! justify-between"><span class="text-sm text-muted">{{ 'book.compTwos' | translate }}</span><span class="hexd">{{ comp().twos }}</span></div>
+        </div>
+      }
+    </div>
+  }
+
+  @case ('sound-lab') {
+    <div class="lab">
+      <div class="grid w-full max-w-[520px] gap-3">
+        <label class="soundrow"><span>{{ 'book.soundRate' | translate }}</span>
+          <select class="lab-select" (change)="rate.set(+$any($event.target).value)">
+            @for (r of rates; track r) {
+              <option [value]="r" [selected]="r === rate()">{{ r }} Hz</option>
+            }
+          </select>
+        </label>
+        <label class="soundrow"><span>{{ 'book.soundDepth' | translate }}</span>
+          <select class="lab-select" (change)="depth.set(+$any($event.target).value)">
+            @for (d of depths; track d) {
+              <option [value]="d" [selected]="d === depth()">{{ d }} bit</option>
+            }
+          </select>
+        </label>
+        <label class="soundrow"><span>{{ 'book.soundChannels' | translate }}</span>
+          <select class="lab-select" (change)="channels.set(+$any($event.target).value)">
+            <option value="1" [selected]="channels() === 1">{{ 'book.mono' | translate }}</option>
+            <option value="2" [selected]="channels() === 2">{{ 'book.stereo' | translate }}</option>
+          </select>
+        </label>
+        <label class="soundrow"><span>{{ 'book.soundSeconds' | translate }}: <b class="ltr-num">{{ seconds() }}</b></span>
+          <input type="range" min="1" max="60" [value]="seconds()" (input)="seconds.set(+$any($event.target).value)" />
+        </label>
+      </div>
+      <div class="text-center font-mono text-sm text-muted ltr-num" dir="ltr">{{ rate() }} × {{ depth() }} × {{ channels() }} × {{ seconds() }} = {{ soundBits() }} bit</div>
+      <div class="text-center font-mono text-3xl font-bold ltr-num" dir="ltr">÷ 8 = {{ soundSize() }} B ≈ <em class="not-italic text-primary">{{ soundSizeText() }}</em></div>
+    </div>
+  }
+
+  @case ('rgb-lab') {
+    <div class="lab">
+      <div class="swatch" [style.background]="colour()"></div>
+      <div class="grid w-full max-w-[520px] gap-2" dir="ltr">
+        <label class="soundrow"><span>{{ 'book.red' | translate }}: <b class="ltr-num">{{ red() }}</b></span><input type="range" min="0" max="255" [value]="red()" (input)="red.set(+$any($event.target).value)" /></label>
+        <label class="soundrow"><span>{{ 'book.green' | translate }}: <b class="ltr-num">{{ green() }}</b></span><input type="range" min="0" max="255" [value]="green()" (input)="green.set(+$any($event.target).value)" /></label>
+        <label class="soundrow"><span>{{ 'book.blue' | translate }}: <b class="ltr-num">{{ blue() }}</b></span><input type="range" min="0" max="255" [value]="blue()" (input)="blue.set(+$any($event.target).value)" /></label>
+      </div>
+      <div class="flex flex-wrap justify-center gap-2 font-mono text-lg" dir="ltr">
+        @for (b of colourBits(); track $index) {
+          <span class="hexg !py-1.5">{{ b }}</span>
+        }
+      </div>
+      <div class="text-center text-sm text-muted">{{ 'book.rgbNote' | translate }}</div>
+    </div>
+  }
+
+  @case ('rle-lab') {
+    <div class="lab">
+      <label class="text-sm text-muted" for="rlein">{{ 'book.rleTry' | translate }}</label>
+      <input id="rlein" class="lab-input" dir="ltr" maxlength="30" [value]="rleInput()" (input)="onRleInput($event)" />
+      <div class="flex flex-wrap justify-center gap-2" dir="ltr">
+        @for (r of runs(); track $index) {
+          <div class="hexg"><span class="font-mono text-lg tracking-widest">{{ r.ch.repeat(r.n) }}</span><span class="hexd">{{ r.ch }}{{ r.n }}</span></div>
+        }
+      </div>
+      @if (rleInput().length) {
+        <div class="text-center font-mono text-xl font-bold ltr-num" dir="ltr">{{ rleInput().length }} → {{ rle().length }} ({{ rlePercent() }}%)</div>
+      }
+    </div>
+  }
+
+  @case ('image-lab') {
+    <div class="lab">
+      <div class="grid w-full max-w-[520px] gap-3">
+        <label class="soundrow"><span>{{ 'book.imgWidth' | translate }}</span>
+          <select class="lab-select" (change)="imgW.set(+$any($event.target).value)">
+            @for (w of widths; track w) {
+              <option [value]="w" [selected]="w === imgW()">{{ w }}</option>
+            }
+          </select>
+        </label>
+        <label class="soundrow"><span>{{ 'book.imgHeight' | translate }}</span>
+          <select class="lab-select" (change)="imgH.set(+$any($event.target).value)">
+            @for (h of heights; track h) {
+              <option [value]="h" [selected]="h === imgH()">{{ h }}</option>
+            }
+          </select>
+        </label>
+        <label class="soundrow"><span>{{ 'book.imgDepth' | translate }}</span>
+          <select class="lab-select" (change)="imgBits.set(+$any($event.target).value)">
+            <option value="8" [selected]="imgBits() === 8">8 bit</option>
+            <option value="24" [selected]="imgBits() === 24">24 bit</option>
+          </select>
+        </label>
+      </div>
+      <div class="text-center font-mono text-sm text-muted ltr-num" dir="ltr">{{ imgW() }} × {{ imgH() }} × {{ imgBits() }} bit</div>
+      <div class="text-center font-mono text-3xl font-bold ltr-num" dir="ltr">÷ 8 = {{ imgBytes() }} B ≈ <em class="not-italic text-primary">{{ imgBytesText() }}</em></div>
+    </div>
+  }
+
+  @case ('computer-map') {
+    <div class="lab">
+      <div class="cmap" dir="ltr">
+        <div class="cbox side">
+          <button type="button" class="cpart" [class.on]="partOf(b.parts) === 'input'" (click)="selectedPart.set('input')">{{ 'book.mapInput' | translate }}</button>
+        </div>
+        <div class="grid gap-3">
+          <div class="cbox">
+            <span class="cap">CPU</span>
+            <button type="button" class="cpart" [class.on]="partOf(b.parts) === 'cu'" (click)="selectedPart.set('cu')">{{ 'book.mapCu' | translate }}</button>
+            <button type="button" class="cpart" [class.on]="partOf(b.parts) === 'alu'" (click)="selectedPart.set('alu')">{{ 'book.mapAlu' | translate }}</button>
+          </div>
+          <div class="cbox">
+            <span class="cap">{{ 'book.mapStorage' | translate }}</span>
+            <button type="button" class="cpart" [class.on]="partOf(b.parts) === 'main'" (click)="selectedPart.set('main')">{{ 'book.mapMain' | translate }}</button>
+            <button type="button" class="cpart" [class.on]="partOf(b.parts) === 'storage'" (click)="selectedPart.set('storage')">{{ 'book.mapSecondary' | translate }}</button>
+          </div>
+        </div>
+        <div class="cbox side">
+          <button type="button" class="cpart" [class.on]="partOf(b.parts) === 'output'" (click)="selectedPart.set('output')">{{ 'book.mapOutput' | translate }}</button>
+        </div>
+      </div>
+      @for (p of b.parts; track p.id) {
+        @if (p.id === partOf(b.parts)) {
+          <div class="grid w-full max-w-[560px] gap-1 rounded-[18px] bg-card px-4 py-3">
+            <b class="text-primary">{{ language.pick(p.name) }}</b>
+            <span class="text-[15px] leading-relaxed">{{ language.pick(p.text) }}</span>
+            <span class="text-sm text-muted">{{ language.pick(p.example) }}</span>
+          </div>
+        }
+      }
+      <div class="text-center text-sm text-muted">{{ 'book.mapHint' | translate }}</div>
+    </div>
+  }
+
+  @case ('logic-lab') {
+    <div class="lab">
+      <div class="flex flex-wrap items-center justify-center gap-4" dir="ltr">
+        <button type="button" class="bitbtn" [class.on]="gateA() === 1" (click)="toggleGate('a')">A = {{ gateA() }}</button>
+        <button type="button" class="bitbtn" [class.on]="gateB() === 1" (click)="toggleGate('b')">B = {{ gateB() }}</button>
+      </div>
+      <div class="flex flex-wrap justify-center gap-3" dir="ltr">
+        <div class="hexg"><span class="text-sm text-muted">AND</span><span class="hexd">{{ gates().and }}</span></div>
+        <div class="hexg"><span class="text-sm text-muted">OR</span><span class="hexd">{{ gates().or }}</span></div>
+        <div class="hexg"><span class="text-sm text-muted">NOT A</span><span class="hexd">{{ gates().not }}</span></div>
+      </div>
+      <div class="text-center text-sm text-muted">{{ 'book.logicHint' | translate }}</div>
+    </div>
+  }
+
+  @case ('adder-lab') {
+    <div class="lab">
+      <div class="flex flex-wrap items-center justify-center gap-4" dir="ltr">
+        <button type="button" class="bitbtn" [class.on]="gateA() === 1" (click)="toggleGate('a')">A = {{ gateA() }}</button>
+        <button type="button" class="bitbtn" [class.on]="gateB() === 1" (click)="toggleGate('b')">B = {{ gateB() }}</button>
+      </div>
+      <div class="flex flex-wrap justify-center gap-3" dir="ltr">
+        <div class="hexg"><span class="text-sm text-muted">C ({{ 'book.adderCarry' | translate }})</span><span class="hexd">{{ adder().c }}</span></div>
+        <div class="hexg"><span class="text-sm text-muted">S ({{ 'book.adderSum' | translate }})</span><span class="hexd">{{ adder().s }}</span></div>
+      </div>
+      <div class="text-center font-mono text-2xl font-bold ltr-num" dir="ltr">{{ gateA() }} + {{ gateB() }} = {{ adder().c }}{{ adder().s }}</div>
+      <div class="text-center text-sm text-muted">{{ 'book.adderHint' | translate }}</div>
+    </div>
+  }
+
+  @case ('ip-lab') {
+    <div class="lab">
+      <label class="text-sm text-muted" for="ipin">{{ 'book.ipTry' | translate }}</label>
+      <input id="ipin" class="lab-input" dir="ltr" inputmode="decimal" maxlength="15" [value]="ipText()" (input)="onIpInput($event)" />
+      <div class="flex flex-wrap items-center justify-center gap-2" dir="ltr">
+        @for (o of ip(); track $index) {
+          <div class="hexg"><span class="hexd">{{ o.n }}</span><span class="font-mono text-base tracking-widest">{{ o.bits }}</span></div>
+          @if (!$last) {
+            <span class="text-2xl font-bold text-muted">.</span>
+          }
+        }
+      </div>
+      <div class="text-center text-sm text-muted">{{ 'book.ipNote' | translate }}</div>
+    </div>
+  }
+
+  @case ('url-lab') {
+    <div class="lab">
+      <div class="flex flex-wrap items-center justify-center gap-1.5" dir="ltr">
+        @for (p of b.parts; track $index) {
+          <button type="button" class="cpart font-mono" [class.on]="selectedUrl() === $index" (click)="selectedUrl.set($index)">{{ p.text }}</button>
+        }
+      </div>
+      @for (p of b.parts; track $index) {
+        @if ($index === selectedUrl()) {
+          <div class="grid w-full max-w-[560px] gap-1 rounded-[18px] bg-card px-4 py-3">
+            <b class="text-primary">{{ language.pick(p.name) }}</b>
+            <span class="text-[15px] leading-relaxed">{{ language.pick(p.meaning) }}</span>
+          </div>
+        }
+      }
+      <div class="text-center text-sm text-muted">{{ 'book.mapHint' | translate }}</div>
+    </div>
+  }
+
+  @case ('db-shapes') {
+    <app-db-shapes [items]="b.items" />
+  }
+
+  @case ('web-lab') {
+    <app-web-lab [html]="b.html" [css]="b.css ?? ''" [js]="b.js ?? ''" />
+  }
+
+  @case ('db-lab') {
+    <app-db-lab [show]="b.show" [students]="b.students" [clubs]="b.clubs" [club]="b.club" />
+  }
+
+  @case ('speed-lab') {
+    <div class="lab">
+      <div class="grid w-full max-w-[520px] gap-3">
+        <label class="soundrow"><span>{{ 'book.linkSize' | translate }}</span>
+          <select class="lab-select" (change)="linkSize.set(+$any($event.target).value)">
+            @for (z of speedSizes; track z) {
+              <option [value]="z" [selected]="z === linkSize()">{{ z }} MB</option>
+            }
+          </select>
+        </label>
+        <label class="soundrow"><span>{{ 'book.linkRate' | translate }}</span>
+          <select class="lab-select" (change)="linkRate.set(+$any($event.target).value)">
+            @for (z of speedRates; track z) {
+              <option [value]="z" [selected]="z === linkRate()">{{ z }} Mbps</option>
+            }
+          </select>
+        </label>
+        <label class="soundrow"><span>{{ 'book.linkEff' | translate }}: <b class="ltr-num">{{ linkEff() }}%</b></span>
+          <input type="range" min="10" max="100" step="10" [value]="linkEff()" (input)="linkEff.set(+$any($event.target).value)" />
+        </label>
+      </div>
+      <div class="text-center font-mono text-sm text-muted ltr-num" dir="ltr">{{ linkSize() }} × 8 ÷ ({{ linkRate() }} × {{ linkEff() / 100 }})</div>
+      <div class="text-center font-mono text-3xl font-bold ltr-num" dir="ltr">= <em class="not-italic text-primary">{{ linkSeconds() }}</em> s</div>
+    </div>
+  }
+
+  @case ('data-lab') {
+    <div class="lab">
+      <span class="text-sm text-muted">{{ 'book.dataTry' | translate }}</span>
+      <input class="lab-input wide data-in" [attr.aria-label]="'book.dataTry' | translate" dir="ltr" [value]="dataText()" (input)="onDataInput($event)" />
+      <div class="flex flex-wrap justify-center gap-1.5" dir="ltr">
+        @for (v of dataSorted(); track $index) {
+          <span class="chip">{{ v }}</span>
+        }
+      </div>
+      <div class="flex flex-wrap justify-center gap-3" dir="ltr">
+        <div class="hexg"><span class="text-sm text-muted">{{ 'book.statMean' | translate }}</span><span class="hexd">{{ stats().mean }}</span></div>
+        <div class="hexg"><span class="text-sm text-muted">{{ 'book.statMedian' | translate }}</span><span class="hexd">{{ stats().median }}</span></div>
+        <div class="hexg"><span class="text-sm text-muted">{{ 'book.statMode' | translate }}</span><span class="hexd">{{ stats().mode.length ? stats().mode.join(', ') : '–' }}</span></div>
+      </div>
+      @if (bins().length) {
+        <div class="hist" dir="ltr">
+          @for (x of bins(); track $index) {
+            <div class="histcol">
+              <span class="text-xs font-bold">{{ x.count }}</span>
+              <span class="histbar" [style.height.%]="x.height"></span>
+              <span class="text-[11px] text-muted">{{ x.from }}</span>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  @case ('boxplot-lab') {
+    <div class="lab">
+      <span class="text-sm text-muted">{{ 'book.dataTry' | translate }}</span>
+      <input class="lab-input wide data-in" [attr.aria-label]="'book.dataTry' | translate" dir="ltr" [value]="dataText()" (input)="onDataInput($event)" />
+      @if (stats().n) {
+        <div class="boxplot" dir="ltr">
+          <span class="whisker" [style.left.%]="plotPos(five().min)" [style.width.%]="plotPos(five().q1) - plotPos(five().min)"></span>
+          <span class="whisker" [style.left.%]="plotPos(five().q3)" [style.width.%]="plotPos(five().max) - plotPos(five().q3)"></span>
+          <span class="boxrect" [style.left.%]="plotPos(five().q1)" [style.width.%]="plotPos(five().q3) - plotPos(five().q1)"></span>
+          <span class="medline" [style.left.%]="plotPos(five().median)"></span>
+        </div>
+        <div class="flex flex-wrap justify-center gap-2" dir="ltr">
+          <div class="hexg"><span class="text-xs text-muted">{{ 'book.five.min' | translate }}</span><span class="hexd">{{ five().min }}</span></div>
+          <div class="hexg"><span class="text-xs text-muted">Q1</span><span class="hexd">{{ five().q1 }}</span></div>
+          <div class="hexg"><span class="text-xs text-muted">{{ 'book.five.median' | translate }}</span><span class="hexd">{{ five().median }}</span></div>
+          <div class="hexg"><span class="text-xs text-muted">Q3</span><span class="hexd">{{ five().q3 }}</span></div>
+          <div class="hexg"><span class="text-xs text-muted">{{ 'book.five.max' | translate }}</span><span class="hexd">{{ five().max }}</span></div>
+        </div>
+      }
+    </div>
+  }
+
+  @case ('spread-lab') {
+    <div class="lab">
+      <span class="text-sm text-muted">{{ 'book.dataTry' | translate }}</span>
+      <input class="lab-input wide data-in" [attr.aria-label]="'book.dataTry' | translate" dir="ltr" [value]="dataText()" (input)="onDataInput($event)" />
+      @if (spreadRows().length) {
+        <div class="spreadtab" dir="ltr">
+          <span class="th">x</span><span class="th">x − x̄</span><span class="th">(x − x̄)²</span>
+          @for (r of spreadRows(); track $index) {
+            <span>{{ r.x }}</span><span>{{ r.dev }}</span><span>{{ r.sq }}</span>
+          }
+        </div>
+        <div class="flex flex-wrap justify-center gap-3" dir="ltr">
+          <div class="hexg"><span class="text-sm text-muted">{{ 'book.statMean' | translate }}</span><span class="hexd">{{ spread().mean }}</span></div>
+          <div class="hexg"><span class="text-sm text-muted">{{ 'book.spreadVar' | translate }}</span><span class="hexd">{{ spread().variance }}</span></div>
+          <div class="hexg"><span class="text-sm text-muted">{{ 'book.spreadSd' | translate }}</span><span class="hexd">{{ spread().sd }}</span></div>
+        </div>
+      }
+    </div>
+  }
+
+  @case ('scatter-lab') {
+    <div class="lab">
+      <div class="flex flex-wrap justify-center gap-2">
+        @for (set of b.sets; track $index) {
+          <button type="button" class="cpart" [class.on]="scatterIndex() === $index" (click)="scatterIndex.set($index)">{{ language.pick(set.name) }}</button>
+        }
+      </div>
+      @if (scatter(); as sc) {
+        <div class="flex w-full flex-wrap items-center justify-center gap-4">
+          <svg class="scatter" viewBox="0 0 300 200" dir="ltr" role="img" [attr.aria-label]="'book.scatterAria' | translate">
+            <line x1="20" y1="180" x2="290" y2="180" class="axis" />
+            <line x1="20" y1="10" x2="20" y2="180" class="axis" />
+            @for (p of sc.points; track $index) {
+              <circle [attr.cx]="p.cx" [attr.cy]="p.cy" r="4.5" class="dot" />
+            }
+            @if (showLine()) {
+              <line [attr.x1]="sc.line.x1" [attr.y1]="sc.line.y1" [attr.x2]="sc.line.x2" [attr.y2]="sc.line.y2" class="fitline" />
+            }
+          </svg>
+          <div class="flex flex-col items-center gap-2" dir="ltr">
+            <div class="hexg"><span class="text-sm text-muted">r</span><span class="hexd">{{ sc.r }}</span></div>
+            <button type="button" class="seq-btn" (click)="showLine.set(!showLine())">{{ 'book.scatterLine' | translate }}</button>
+            @if (showLine()) {
+              <span class="font-mono text-base font-bold">{{ sc.equation }}</span>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  @case ('pi-lab') {
+    <div class="lab">
+      <div class="flex w-full flex-wrap items-center justify-center gap-4">
+        <svg class="scatter" viewBox="0 0 220 220" dir="ltr" role="img" [attr.aria-label]="'book.piAria' | translate">
+          <rect x="10" y="10" width="200" height="200" class="axis" fill="none" stroke-width="2" />
+          <path d="M10 210 L10 10 A200 200 0 0 1 210 210 Z" class="quarter" />
+          @for (d of piDots(); track $index) {
+            <circle [attr.cx]="10 + d.x * 200" [attr.cy]="210 - d.y * 200" r="2" [class.in]="d.inside" [class.out]="!d.inside" />
+          }
+        </svg>
+        <div class="flex flex-col items-center gap-2" dir="ltr">
+          <div class="flex gap-2">
+            <div class="hexg"><span class="text-xs text-muted">n</span><span class="hexd">{{ piInside() }}</span></div>
+            <div class="hexg"><span class="text-xs text-muted">N</span><span class="hexd">{{ piDots().length }}</span></div>
+          </div>
+          <div class="font-mono text-xl font-bold">π ≈ 4 × {{ piInside() }} ÷ {{ piDots().length || 0 }} = <em class="not-italic text-primary">{{ piValue() }}</em></div>
+          <div class="flex gap-2">
+            <button type="button" class="seq-btn primary" (click)="throwDots(100)">{{ 'book.piAdd' | translate }}</button>
+            <button type="button" class="seq-btn" (click)="resetDots()" [disabled]="!piDots().length">{{ 'book.piReset' | translate }}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  @case ('queue-lab') {
+    <div class="lab">
+      <div class="grid w-full max-w-[560px] gap-2">
+        <label class="soundrow"><span>{{ 'book.qGap' | translate }}: <b class="ltr-num">{{ qGap() }}</b></span><input type="range" min="10" max="60" step="10" [value]="qGap()" (input)="qGap.set(+$any($event.target).value)" /></label>
+        <label class="soundrow"><span>{{ 'book.qService' | translate }}: <b class="ltr-num">{{ qService() }}</b></span><input type="range" min="10" max="60" step="10" [value]="qService()" (input)="qService.set(+$any($event.target).value)" /></label>
+      </div>
+      @if (queue(); as q) {
+        <div class="qchart" dir="ltr">
+          @for (r of q.rows; track r.n) {
+            <div class="qrow">
+              <span class="text-xs text-muted">{{ r.n }}</span>
+              <span class="qtrack">
+                <i class="qwait" [style.left.%]="r.waitLeft" [style.width.%]="r.waitWidth"></i>
+                <i class="qserve" [style.left.%]="r.serveLeft" [style.width.%]="r.serveWidth"></i>
+              </span>
+              <span class="font-mono text-xs">{{ r.wait }}</span>
+            </div>
+          }
+          <div class="text-center text-xs text-muted">0 → {{ q.total }} {{ 'book.qMin' | translate }}</div>
+        </div>
+        <div class="flex flex-wrap justify-center gap-4 text-sm">
+          <span><i class="qkey wait"></i> {{ 'book.qWaiting' | translate }}</span>
+          <span><i class="qkey serve"></i> {{ 'book.qServed' | translate }}</span>
+          <span class="font-bold">{{ 'book.qLongest' | translate }} {{ q.longest + 1 }}</span>
+        </div>
+      }
+    </div>
+  }
+
+  @case ('trace-lab') {
+    <div class="lab">
+      @if (trace(); as t) {
+        <div class="flex w-full flex-wrap items-start justify-center gap-4">
+          <div class="codebox" dir="ltr">
+            @for (line of b.code; track $index) {
+              <div class="codeline" [class.now]="$index === t.step.line"><span class="ln">{{ $index + 1 }}</span><code>{{ line }}</code></div>
+            }
+          </div>
+          <div class="flex min-w-[170px] flex-col gap-3" dir="ltr">
+            <div class="tracebox">
+              <b class="text-xs text-muted">{{ 'book.traceVars' | translate }}</b>
+              @for (v of t.step.vars ?? []; track v.name) {
+                <div class="font-mono text-sm"><span class="text-primary">{{ v.name }}</span> = {{ v.value }}</div>
+              }
+              @if (!(t.step.vars ?? []).length) {
+                <span class="text-sm text-muted">–</span>
+              }
+            </div>
+            <div class="tracebox">
+              <b class="text-xs text-muted">{{ 'book.traceOut' | translate }}</b>
+              @for (o of t.step.out ?? []; track $index) {
+                <div class="font-mono text-sm">{{ o }}</div>
+              }
+              @if (!(t.step.out ?? []).length) {
+                <span class="text-sm text-muted">–</span>
+              }
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center justify-center gap-2">
+          <button type="button" class="seq-btn" (click)="traceMove(-1)" [disabled]="traceIndex() === 0">{{ 'book.tracePrev' | translate }}</button>
+          <button type="button" class="seq-btn primary" (click)="traceMove(1)" [disabled]="t.last">{{ 'book.nextStep' | translate }}</button>
+          <button type="button" class="seq-btn" (click)="traceIndex.set(0)" [disabled]="traceIndex() === 0">{{ 'book.fromStart' | translate }}</button>
+          <span class="font-mono text-xs text-muted ltr-num">{{ traceIndex() + 1 }} / {{ t.total }}</span>
+        </div>
+      }
+    </div>
+  }
+
+  @case ('fill-code') {
+    <div class="lab">
+      <div class="codebox" dir="ltr">
+        @for (line of fillParts(); track $index; let n = $index) {
+          <div class="codeline"><span class="ln">{{ n + 1 }}</span><code class="flex flex-wrap items-center">
+            @for (p of line; track $index) {
+              @if (p.blank === null) {
+                <span class="whitespace-pre">{{ p.text }}</span>
+              } @else {
+                <input class="blank" dir="ltr" [attr.aria-label]="'book.fillBlank' | translate"
+                  [class.ok]="fillChecked() && fillRight(p.blank)" [class.bad]="fillChecked() && !fillRight(p.blank)"
+                  [value]="fillShown() ? fillShow(p.blank) : (fillValues()[p.blank] ?? '')" [disabled]="fillShown()"
+                  [style.width.ch]="blankWidth(p.blank)"
+                  (input)="fillType(p.blank, $event)" />
+              }
+            }
+          </code></div>
+        }
+      </div>
+      <div class="flex flex-wrap items-center justify-center gap-2">
+        <button type="button" class="seq-btn primary" (click)="fillChecked.set(true)" [disabled]="fillShown()">{{ 'book.fillCheck' | translate }}</button>
+        <button type="button" class="seq-btn" (click)="fillShown.set(!fillShown())">{{ (fillShown() ? 'book.fillHide' : 'book.fillShow') | translate }}</button>
+        @if (fillChecked() && fillAllRight()) {
+          <span class="font-bold text-primary">{{ 'book.fillAllRight' | translate }}</span>
+        }
+      </div>
+    </div>
+  }
+
+  @case ('bit-bulbs') {
+    <div class="flex flex-wrap items-center justify-center gap-5">
+      <button type="button" class="bigbulb" [class.on]="bitOn()" (click)="tapBit(true)">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path class="gl" d="M12 2.5a6.5 6.5 0 0 0-3.9 11.7c.6.5 1 1.2 1 2V17h5.8v-.8c0-.8.4-1.5 1-2A6.5 6.5 0 0 0 12 2.5z" /><path class="gl" d="M9.5 20h5M10.5 22.5h3" /></svg>
+        <span class="d">1</span><small>{{ 'book.on' | translate }}</small>
+      </button>
+      <button type="button" class="bigbulb" (click)="tapBit(false)">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path class="gl" d="M12 2.5a6.5 6.5 0 0 0-3.9 11.7c.6.5 1 1.2 1 2V17h5.8v-.8c0-.8.4-1.5 1-2A6.5 6.5 0 0 0 12 2.5z" /><path class="gl" d="M9.5 20h5M10.5 22.5h3" /></svg>
+        <span class="d">0</span><small>{{ 'book.off' | translate }}</small>
+      </button>
+    </div>
+  }
+
+  @case ('bit-combos') {
+    <div class="grid grid-cols-1 gap-3.5 md:grid-cols-3">
+      @for (row of combos(); track row.bits) {
+        <div class="flex flex-col items-center gap-2.5 rounded-[20px] bg-surface p-3.5">
+          <span class="font-mono text-base font-bold ltr-num">{{ row.bits }} bit</span>
+          <span class="flex flex-wrap justify-center gap-1.5 ltr-num" dir="ltr">
+            @for (c of row.items; track c) {
+              <span class="rounded-lg border border-line bg-card px-[7px] py-0.5 font-mono text-[13px] font-semibold">{{ c }}</span>
+            }
+          </span>
+          <span class="font-mono text-[22px] font-bold text-primary ltr-num">= {{ row.items.length }}</span>
+        </div>
+      }
+    </div>
+  }
+
+  @case ('byte-box') {
+    <div class="flex flex-col items-center gap-2">
+      <div class="byte" aria-hidden="true" dir="ltr">
+        @for (i of [0, 1, 2, 3, 4, 5, 6, 7]; track i) {
+          <i [class.lit]="i % 2 === 0"></i>
+        }
+      </div>
+      <b class="font-mono text-xl ltr-num">1 Byte = 1 B</b>
+      <span class="rounded-full border border-line bg-surface px-3.5 py-1.5 text-sm font-medium">
+        {{ 'book.canRepresent' | translate }} <span class="font-mono font-bold ltr-num">256 = 2⁸</span>
+      </span>
+    </div>
+  }
+
+  @case ('unit-stairs') {
+    <div class="flex flex-wrap items-center justify-center gap-1.5" dir="ltr">
+      @for (u of b.units; track u; let last = $last) {
+        <span class="rounded-[14px] px-3.5 py-2 font-mono text-lg font-bold" [class]="last ? 'bg-sun text-on-sun' : 'bg-primary-soft text-primary'">{{ u }}</span>
+        @if (!last) {
+          <span class="flex flex-col items-center font-mono text-xs leading-tight text-muted">×{{ b.factor }}<span>→</span></span>
+        }
+      }
+    </div>
+  }
+
+  @case ('number-systems') {
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div class="flex flex-col items-center gap-2.5 rounded-[22px] bg-surface p-[18px] text-center">
+        <h3 class="m-0 text-xl font-bold">{{ 'book.decimal' | translate }}</h3>
+        <div class="flex flex-wrap justify-center gap-[5px]" dir="ltr">
+          @for (d of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]; track d) {
+            <span class="grid h-[34px] w-[30px] place-items-center rounded-[9px] border border-line bg-card font-mono font-bold">{{ d }}</span>
+          }
+        </div>
+        <p class="m-0 text-[14.5px] text-muted">{{ 'book.decimalHint' | translate }}</p>
+        <span class="font-mono text-[34px] font-bold leading-none ltr-num">({{ b.decimalExample }})<sub class="text-[15px] text-primary">10</sub></span>
+      </div>
+      <div class="flex flex-col items-center gap-2.5 rounded-[22px] bg-surface p-[18px] text-center">
+        <h3 class="m-0 text-xl font-bold">{{ 'book.binary' | translate }}</h3>
+        <div class="flex justify-center gap-[5px]" dir="ltr">
+          <span class="grid size-11 place-items-center rounded-[9px] border border-line bg-card font-mono text-[22px] font-bold">0</span>
+          <span class="grid size-11 place-items-center rounded-[9px] bg-sun font-mono text-[22px] font-bold text-on-sun">1</span>
+        </div>
+        <p class="m-0 text-[14.5px] text-muted">{{ 'book.binaryHint' | translate }}</p>
+        <span class="font-mono text-[34px] font-bold leading-none ltr-num">({{ b.binaryExample }})<sub class="text-[15px] text-primary">2</sub></span>
+      </div>
+    </div>
+  }
+
+  @case ('place-values') {
+    @if (places(); as p) {
+      <div class="flex flex-wrap justify-center gap-3" dir="ltr">
+        @for (v of p.values; track $index) {
+          <div class="place" [class.on]="v.digit">
+            <span class="font-mono text-[13px] text-muted">2{{ v.sup }}</span>
+            <span class="w font-mono text-xl font-bold text-primary">{{ v.weight }}</span>
+            <span class="cell">{{ v.digit }}</span>
+          </div>
+        }
+      </div>
+      <div class="text-center font-mono text-2xl font-bold ltr-num">
+        {{ p.terms }} = <em class="not-italic text-primary">({{ p.total }})₁₀</em>
+      </div>
+    }
+  }
+
+  @case ('division-ladder') {
+    @if (division(); as d) {
+      <div class="flex items-stretch justify-center gap-[18px]" dir="ltr">
+        <div class="flex flex-col gap-2.5 font-mono">
+          @for (s of d.steps; track $index) {
+            <div class="grid grid-cols-[130px_70px] items-center gap-2.5 rounded-[14px] bg-surface px-3.5 py-2.5 text-xl">
+              <span>{{ s.dividend }} ÷ 2 = {{ s.quotient }}</span>
+              <span class="rounded-[10px] bg-sun py-0.5 text-center font-bold text-on-sun">{{ s.remainder }}</span>
+            </div>
+          }
+        </div>
+        <div class="flex flex-col items-center gap-1 py-1 text-primary" [attr.aria-label]="'book.readUp' | translate">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6" /></svg>
+          <span class="w-[3px] flex-1 rounded-sm bg-primary"></span>
+        </div>
+      </div>
+      <div class="text-center font-mono text-[34px] font-bold ltr-num">
+        {{ b.n }} = ({{ d.result }})<sub class="text-[15px] text-primary">2</sub>
+      </div>
+    }
+  }
+
+  @case ('question') {
+    <app-question-block [block]="b" (answered)="answered.emit($event)" />
+  }
+
+  @case ('recap') {
+    <div class="grid w-full max-w-[620px] grid-cols-2 gap-2.5 self-center">
+      @for (item of b.items; track $index) {
+        <div class="rounded-2xl bg-surface px-3 py-2.5 text-[15px] font-medium">
+          <span class="font-mono font-bold text-primary ltr-num">{{ item.code }}</span>
+          @if (item.text) {
+            · {{ language.pick(item.text) }}
+          }
+        </div>
+      }
+    </div>
+  }
+
+  @case ('next-steps') {
+    <p class="m-0 text-lg text-muted">
+      {{ 'book.score' | translate }} <span class="font-mono ltr-num">{{ score() }}/{{ questions() }}</span>
+    </p>
+    <div class="flex flex-wrap justify-center gap-2.5">
+      @if (gameKind()) {
+        <a routerLink="../play" class="inline-flex min-h-12 items-center rounded-[14px] bg-primary px-5 font-semibold text-on-primary no-underline shadow-glow transition hover:-translate-y-0.5">{{ 'book.toGame.' + gameKind() | translate }}</a>
+      }
+      @if (hasChallenge()) {
+        <a routerLink="../challenge" class="inline-flex min-h-12 items-center rounded-[14px] border border-line bg-card px-5 font-semibold text-ink no-underline transition hover:-translate-y-0.5">{{ 'book.toCode' | translate }}</a>
+      }
+    </div>
+  }
+}

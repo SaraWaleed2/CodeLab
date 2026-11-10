@@ -1,0 +1,30 @@
+<p class="m-0 text-[22px] font-semibold leading-normal">{{ language.pick(block().question) }}</p>
+
+<div class="grid grid-cols-2 gap-3 md:grid-cols-4">
+  @for (option of block().options; track $index; let i = $index) {
+    <button
+      type="button"
+      class="opt"
+      [class.right]="picked() === i && i === block().answer"
+      [class.wrong]="picked() === i && i !== block().answer"
+      (click)="pick(i)"
+    >
+      <span class="text-xs text-muted">{{ letters()[i] }}</span>
+      @if (isText(option)) {
+        <span class="text-[17px] font-bold leading-snug">{{ language.pick(option) }}</span>
+      } @else {
+        <span class="font-mono text-[22px] font-bold ltr-num">{{ option }}</span>
+      }
+    </button>
+  }
+</div>
+
+@if (picked() !== null && !solved()) {
+  <div class="feedback bad">
+    <b class="mb-0.5 block">{{ 'book.bookSays' | translate }}</b>
+    {{ language.pick(block().explanation) }}
+  </div>
+}
+@if (solved()) {
+  <div class="feedback ok">{{ language.pick(block().success) }}</div>
+}

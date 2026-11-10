@@ -1,0 +1,36 @@
+<svg
+  [attr.width]="size()"
+  [attr.height]="size()"
+  viewBox="0 0 48 48"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="3.2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  role="img"
+  [attr.aria-label]="code()"
+>
+  <circle cx="24" cy="24" r="20.5" />
+  @switch (code()) {
+    @case ('BY') {
+      <!-- a person -->
+      <circle cx="24" cy="14.5" r="3.4" fill="currentColor" stroke="none" />
+      <path d="M18.5 21.5h11v9h-3v8h-5v-8h-3z" fill="currentColor" stroke="none" />
+    }
+    @case ('NC') {
+      <!-- a currency sign, struck through -->
+      <path d="M29.5 16.2c-1.2-1.6-3.2-2.4-5.5-2.4-3.3 0-5.5 1.6-5.5 4 0 5.6 11.4 3 11.4 8.8 0 2.5-2.4 4.2-5.9 4.2-2.6 0-4.8-.9-6-2.6" />
+      <path d="M24 10.5v27" />
+      <path d="M12 36L36 12" stroke-width="3.6" />
+    }
+    @case ('ND') {
+      <!-- an equals sign -->
+      <path d="M15 19.5h18M15 28.5h18" stroke-width="4.2" />
+    }
+    @case ('SA') {
+      <!-- a circular arrow -->
+      <path d="M32.5 19.5A10 10 0 1 0 34 25" />
+      <path d="M33.5 12.5v7h-7" />
+    }
+  }
+</svg>

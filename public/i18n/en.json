@@ -1,0 +1,446 @@
+{
+  "brand": "CodeLab",
+  "nav": {
+    "label": "Navigation",
+    "home": "Home",
+    "lessons": "Lessons",
+    "games": "Games",
+    "challenges": "Challenges"
+  },
+  "header": {
+    "points": "pts",
+    "otherLang": "عربي",
+    "themeToggle": "Toggle dark mode"
+  },
+  "common": {
+    "close": "Close",
+    "soon": "Coming soon"
+  },
+  "methods": {
+    "cards": "Explainer cards",
+    "scenarios": "What would you do?",
+    "tools": "Tools to play with",
+    "code": "Code challenges"
+  },
+  "bito": {
+    "name": "Beto",
+    "talk": "Talk to Beto",
+    "hello": "Hi! I'm Beto, and I'll go with you step by step.",
+    "poke": "I'm here! Tap me if you need anything.",
+    "home": {
+      "hello": "Hi! I'm Beto. Try switching on the bulbs above to make 45, then we start Unit {{unit}}.",
+      "poke": "You're in Unit {{unit}}, lesson {{lesson}}. Tap \"Continue Unit {{unit}}\" and I'll explain it page by page.",
+      "pokeSoon": "Unit {{unit}}'s lessons are still being prepared. Meanwhile, play with the bulbs above."
+    },
+    "try": {
+      "on": "You switched on the {{v}} bulb. You have {{sum}}, {{left}} to go.",
+      "off": "You switched off the {{v}} bulb. You have {{sum}} now.",
+      "over": "You went past 45! You have {{sum}}, that's {{extra}} too many. Switch one off.",
+      "won": "Nice! 45 = 32 + 8 + 4 + 1, which is 00101101 in binary. That is the whole idea of the lesson.",
+      "reset": "All bulbs are back to 0. Start from the biggest bulb that fits."
+    },
+    "map": {
+      "done": "You finished Unit {{num}}. It's here whenever you want to review.",
+      "current": "This is the unit you're on now. Let's keep going!",
+      "locked": "Unit {{num}} is still locked. Finish Unit {{current}} first and it opens.",
+      "soon": "Unit {{num}} is next, but its lessons are still being prepared. They'll be here soon."
+    },
+    "game": {
+      "hello": "Let's play! The target is {{target}}. Start with the biggest bulb that is not more than the number.",
+      "on": "You switched on {{v}}. You have {{sum}}, the target is {{target}}.",
+      "off": "You switched off {{v}}. You have {{sum}}, the target is {{target}}.",
+      "over": "You have {{sum}}, that is {{extra}} more than {{target}}. One bulb too many.",
+      "exact": "You have exactly {{target}}! Tap \"Check my answer\".",
+      "hintOn": "Switch on the {{v}} bulb.",
+      "hintOff": "Switch off the {{v}} bulb.",
+      "hintDone": "That is right! Tap \"Check my answer\".",
+      "right": "Correct! {{target}} = {{parts}}. +10 points.",
+      "rightAgain": "Correct, but you already got the points for this number.",
+      "streak": "Correct! {{streak}} in a row. Nice going.",
+      "wrong": "Not yet. You have {{sum}}, the target is {{target}}. Tap me if you need help.",
+      "next": "New number: {{target}}. Same idea: biggest to smallest.",
+      "finished": "You did all the numbers! Ready for the code challenge?",
+      "restart": "From the top! The target is {{target}}."
+    },
+    "code": {
+      "hello": "{{fn}} is missing one line where the comment is. Write it and press \"Run & check\". Tap me if you need me.",
+      "lastHint": "OK, here's the line: {{line}} Try to understand it before copying.",
+      "noMore": "That was the last hint. The line is in hint 3.",
+      "banned": "Nope, {{banned}} isn't allowed here. Write the solution yourself, like the book.",
+      "syntax": "There is a typo in the code: {{message}}. Check brackets and semicolons.",
+      "missing": "I can't find a function called {{fn}}. Make sure you didn't rename it.",
+      "timeout": "The code kept looping and never finished. Make sure the loop line that moves the counter is still there, as in the original code.",
+      "unsupported": "This browser won't run code here. Try another browser.",
+      "some": "{{pass}} of {{total}} passed. Test {{input}} returned {{got}} instead of {{expected}}.",
+      "reversed": "So close! The result is reversed: {{got}} instead of {{expected}}. {{note}}",
+      "allPass": "All tests passed! You wrote the solution yourself. +10 points.",
+      "allAgain": "All passed again. Nice work.",
+      "reset": "Original code restored. The missing line goes where the comment is.",
+      "none": "This lesson has no code challenge. Its activity is a game; tap \"Go to the lesson's activity\"."
+    },
+    "sort": {
+      "hello": "Let's sort! First round: “{{round}}” Drag the card to the right box.",
+      "right": "Correct! \"{{item}}\" goes in {{bin}}.",
+      "wrong": "No, \"{{item}}\" doesn't go in {{bin}}. Try another box.",
+      "hint": "\"{{item}}\" goes in the {{bin}} box.",
+      "noItem": "Round complete! Tap the button to continue.",
+      "roundDone": "Well done! Round finished. Mistakes: {{mistakes}}. +10 points.",
+      "nextRound": "New round: “{{round}}”",
+      "finished": "You finished every round! This lesson is done."
+    },
+    "scenario": {
+      "hello": "{{count}} situations, all from the book. Read each one and decide: right or wrong?",
+      "right": "Well done! Read the reason below.",
+      "wrong": "No worries, read the reason below so you remember next time.",
+      "next": "New situation. Think: what if someone did this to me?",
+      "hint": "Ask yourself: if someone did this to me, would it be OK?",
+      "pokeAfter": "Read the reason, then tap the next situation.",
+      "finished": "Done! Correct answers: {{score}} of {{total}}. This lesson is done."
+    },
+    "match": {
+      "hello": "Let's match! First round: “{{round}}”. Tap a card, then its meaning.",
+      "pickFirst": "Pick a card from the other side first, then tap its meaning.",
+      "right": "Correct! The two are matched.",
+      "wrong": "No, that isn't its meaning. Try again.",
+      "hint": "The meaning of “{{card}}” is: {{answer}}.",
+      "hintCc": "The {{code}} symbol means: {{answer}}.",
+      "noItem": "Round complete! Tap the button to continue.",
+      "roundDone": "Well done! Round finished. Mistakes: {{mistakes}}. +10 points.",
+      "nextRound": "New round: “{{round}}”.",
+      "finished": "You finished every round! This lesson is done."
+    },
+    "order": {
+      "hello": "Let's order! First round: «{{round}}». Tap the step that comes first.",
+      "wrong": "No, that is not the next step. Think about what comes first.",
+      "right": "Right! Step {{n}} goes there.",
+      "roundDone": "Well done! Round finished, mistakes: {{mistakes}}. You got 10 points.",
+      "nextRound": "New round: «{{round}}».",
+      "finished": "All rounds done! The lesson is finished.",
+      "noItem": "The round is over! Press the button to continue.",
+      "hint": "Step {{n}} is: {{step}}"
+    }
+  },
+  "home": {
+    "kicker": "Programming & AI, Baccalaureate Year 1",
+    "title": "Your whole course, but as a game",
+    "lead": "Every lesson is a short stage: get the idea, try it with your hands, and earn points. Beto, your robot buddy, helps you all the way. CodeLab complements Qureo; it doesn't replace it.",
+    "continue": "Continue Unit {{unit}}",
+    "seeMap": "See the course map",
+    "footer": "CodeLab · complements Qureo · content from the ministry textbook \"Programming and AI\", Baccalaureate Year 1",
+    "try": {
+      "title": "Try it now",
+      "goal": "Switch on bulbs that add up to",
+      "bulb": "Bulb",
+      "binary": "Binary",
+      "decimal": "Decimal",
+      "won": "Great! You made 45",
+      "over": "{{extra}} over the target",
+      "progress": "{{percent}}% of the way",
+      "reset": "Start over"
+    },
+    "map": {
+      "title": "The Baccalaureate Year 1 journey",
+      "sub": "13 units in the ministry book's order. Tap any unit to learn more.",
+      "progress": "{{done}} of {{total}} units done",
+      "tag": {
+        "done": "Done",
+        "current": "You are here",
+        "locked": "Locked",
+        "soon": "Coming soon"
+      },
+      "status": {
+        "done": "Done",
+        "current": "Current",
+        "locked": "Locked",
+        "soon": "Coming soon"
+      },
+      "bookPage": "From p. {{page}} in the book",
+      "bito": {
+        "done": "You've finished this one. Come back any time something feels unclear.",
+        "current": "We're here! Continue lesson {{lesson}} and let's go.",
+        "locked": "It's a bit early for this one. Finish Unit {{current}} and it unlocks.",
+        "soon": "This unit is next, but its lessons are still being prepared. They'll be here soon."
+      },
+      "continue": "Continue lesson {{lesson}}",
+      "review": "Review unit",
+      "locked": "Finish Unit {{current}} first"
+    },
+    "ways": {
+      "title": "Every lesson is taught the way that fits it",
+      "sub": "Same structure as the book: Key Points, Test Your Knowledge, Try It Yourself, Exercise.",
+      "cards": "One idea per page, with the book's examples and page number, and Beto explaining it simply.",
+      "scenarios": "A real-life situation where you pick the right action, for ethics, law and security.",
+      "tools": "Bulbs you switch on and numbers you build by hand so the idea sticks.",
+      "code": "Write real JavaScript that runs and gets checked right in front of you.",
+      "go": {
+        "cards": "Open the explainer book",
+        "tools": "Play the bulbs game",
+        "code": "Start the challenge"
+      }
+    }
+  },
+  "book": {
+    "breadcrumb": "Where you are",
+    "unit": "Unit {{unit}} · {{title}}",
+    "lesson": "Lesson {{id}}",
+    "label": "Explainer book, use the arrow keys to turn pages",
+    "bookPages": "Ministry book pp. {{pages}}",
+    "pageOf": "Page {{page}} of {{total}}",
+    "next": "Next page",
+    "prev": "Previous",
+    "goTo": "Go to page {{page}}",
+    "keys": "Turn pages with the buttons, the folded corner, the dots, or the arrow keys.",
+    "again": "Explain it again",
+    "listen": "Listen",
+    "bookSays": "The book's answer:",
+    "on": "On",
+    "off": "Off",
+    "canRepresent": "Can represent",
+    "decimal": "Decimal system",
+    "decimalHint": "10 digits, like your ten fingers",
+    "binary": "Binary system",
+    "binaryHint": "Only two digits, like a bulb",
+    "readUp": "Read the remainders bottom to top",
+    "score": "Correct in Test Your Knowledge:",
+    "toGame": {
+      "bulbs": "On to the bulbs game",
+      "sort": "On to the sorting game",
+      "scenarios": "On to \"What would you do?\"",
+      "match": "On to the matching game",
+      "order": "Let's play the ordering game"
+    },
+    "toCode": "Code challenge",
+    "reaction": {
+      "right": "Well done! Correct, +10 points.",
+      "wrong": "No worries, mistakes teach. Read the book's answer and try again.",
+      "poke": "I'm here! If something isn't clear, tap \"Explain it again\".",
+      "bitOn": "Switched on! Now it's 1.",
+      "bitOff": "Switched off! Now it's 0."
+    },
+    "nextStep": "Next step",
+    "fromStart": "From the start",
+    "hexTry": "Try it: type any binary number (only 0 and 1)",
+    "charTry": "Try it: type a word in English",
+    "addFirst": "First number",
+    "addSecond": "Second number",
+    "compTry": "Try it: type any binary number (only 0 and 1)",
+    "compStart": "The number",
+    "compOnes": "Flip every bit (one’s complement)",
+    "compTwos": "Add 1 (two’s complement)",
+    "soundRate": "Samples per second (frequency)",
+    "soundDepth": "Bit depth",
+    "soundChannels": "Channels",
+    "soundSeconds": "Length in seconds",
+    "mono": "Mono (one channel)",
+    "stereo": "Stereo (two channels)",
+    "red": "Red",
+    "green": "Green",
+    "blue": "Blue",
+    "rgbNote": "Each colour = 8 bits, so all three together = 24 bits (3 × 8)",
+    "rleTry": "Try it: type English letters (for example AAAABBB)",
+    "imgWidth": "Horizontal pixels",
+    "imgHeight": "Vertical pixels",
+    "imgDepth": "Colour depth",
+    "mapInput": "Input device",
+    "mapOutput": "Output device",
+    "mapCu": "Control unit",
+    "mapAlu": "Arithmetic and logic unit",
+    "mapStorage": "Storage device",
+    "mapMain": "Main memory",
+    "mapSecondary": "Secondary storage",
+    "mapHint": "Tap any part to see what it does.",
+    "logicHint": "Tap A and B to flip the value (0 or 1) and see the result.",
+    "adderCarry": "carry",
+    "adderSum": "sum",
+    "adderHint": "Just like binary addition: 1 + 1 = 10 (carry 1, sum 0).",
+    "ipTry": "Try it: type an IP address (4 numbers separated by dots)",
+    "ipNote": "Each number from 0 to 255 = 8 bits, so the whole address is 32 bits (4 × 8).",
+    "linkSize": "File size",
+    "linkRate": "Line speed",
+    "linkEff": "Transfer efficiency",
+    "shapesHint": "Tap any shape to see its kind.",
+    "db": {
+      "students": "Students table",
+      "clubs": "Clubs table",
+      "id": "Student code",
+      "name": "Student name",
+      "club": "Club code",
+      "activity": "Club activity",
+      "record": "Row = Record",
+      "field": "Column = Field",
+      "recordNote": "A row (record) = all of one student's data: code, name and club.",
+      "fieldNote": "A column (field) = one kind of data for every student, like the student name.",
+      "mode": {
+        "table": "Table",
+        "selection": "Selection",
+        "projection": "Projection",
+        "join": "Join"
+      },
+      "note": {
+        "table": "The students table as it is: {{rows}} rows and {{cols}} columns. Try the operations above.",
+        "selection": "Selection: only the rows with {{club}} are kept ({{rows}} rows). The columns stay the same.",
+        "projection": "Projection: only the student-name column is kept. All the rows stay.",
+        "join": "Join: the club activity comes from the clubs table through the club code, giving one table with {{cols}} columns."
+      }
+    },
+    "dataTry": "Try it: type numbers separated by spaces or commas",
+    "statMean": "Mean",
+    "statMedian": "Median",
+    "statMode": "Mode",
+    "five": {
+      "min": "Minimum",
+      "median": "Median",
+      "max": "Maximum"
+    },
+    "spreadVar": "Variance",
+    "spreadSd": "Standard deviation",
+    "scatterLine": "Regression line",
+    "scatterAria": "Scatter plot",
+    "piAdd": "Throw 100 dots",
+    "piReset": "Start over",
+    "piAria": "A square with a quarter circle and random dots",
+    "qGap": "Gap between arrivals (minutes)",
+    "qService": "Service time (minutes)",
+    "qMin": "minutes",
+    "qWaiting": "waiting",
+    "qServed": "service",
+    "qLongest": "Longest wait: customer",
+    "tracePrev": "Previous",
+    "traceVars": "Variables",
+    "traceOut": "Output",
+    "fillCheck": "Check",
+    "fillShow": "Show the answer",
+    "fillHide": "Hide the answer",
+    "fillAllRight": "All correct!",
+    "fillBlank": "A blank in the code",
+    "webRun": "Run",
+    "webReset": "Start over",
+    "webPreview": "The page looks like this"
+  },
+  "game": {
+    "title": "Bulbs game",
+    "crumb": "Lesson {{id}} · Bulbs game",
+    "sideTitle": "Build the number with bulbs",
+    "sideText": "Each bulb has a value: 128, 64, 32, 16, 8, 4, 2, 1. A bulb that is on = 1, off = 0. Switch on the bulbs that add up to the target.",
+    "tip": "Tip: start with the biggest bulb that is not more than the number, subtract it, and continue with what is left.",
+    "source": "Idea from: Key Points, pp. 64 – 65",
+    "backToBook": "Back to the explainer book",
+    "progress": "Question progress",
+    "question": "Question",
+    "streak": "In a row",
+    "make": "Build this number in binary",
+    "binary": "Binary",
+    "decimal": "Decimal",
+    "hex": "Hexadecimal",
+    "correct": "Correct! {{target}} = ({{binary}})₂",
+    "notYet": "Not quite. Your total is {{sum}}, the target is {{target}}.",
+    "check": "Check my answer",
+    "next": "Next number",
+    "ask": "Ask Beto",
+    "doneTitle": "You did all {{count}} numbers!",
+    "doneText": "You got {{right}} of {{total}} right.",
+    "again": "Play again",
+    "toCode": "Go to the code challenge"
+  },
+  "code": {
+    "crumb": "Lesson {{id}} · Code challenge",
+    "eyebrow": "JavaScript challenge",
+    "rule1": "Write the missing line where the comment is.",
+    "rule2": "Your code really runs on {{count}} tests: {{inputs}}.",
+    "rule3": "Not allowed:",
+    "hint": "Hint {{n}}",
+    "backToBook": "Back to the explainer book",
+    "editor": "Code editor",
+    "reset": "Restore original code",
+    "run": "Run & check",
+    "askHint": "Hint from Beto ({{n}}/3)",
+    "noHints": "No hints left",
+    "passed": "Passed",
+    "problem": {
+      "banned": "{{banned}} is not allowed in this challenge.",
+      "missing": "The {{fn}} function is missing.",
+      "syntax": "Typo in the code:",
+      "timeout": "The code ran longer than 1.5 seconds and was stopped. The loop probably never ends.",
+      "unsupported": "This browser won't run code here."
+    },
+    "allPass": "All correct! You wrote the solution yourself.",
+    "tests": "Tests",
+    "expected": "Expected",
+    "got": "Got",
+    "pass": "Pass",
+    "fail": "Fail",
+    "notRun": "Not run",
+    "none": {
+      "title": "This lesson has no code challenge",
+      "text": "Code challenges come with lessons about calculation or programming. This lesson's activity is a game.",
+      "toGame": "Go to the lesson's activity"
+    }
+  },
+  "notFound": {
+    "title": "This page doesn't exist yet",
+    "body": "We may still be building it. Go back home and carry on from there.",
+    "back": "Back to home"
+  },
+  "host": {
+    "sort": {
+      "title": "Sorting game",
+      "text": "Put each card in the right box. Drag it with the mouse or your finger, or just tap the box. Every item comes from the book."
+    },
+    "scenarios": {
+      "title": "What would you do?",
+      "text": "A situation from the book appears and you decide: is this action right or wrong? Beto tells you why."
+    },
+    "none": {
+      "title": "This lesson has no game yet",
+      "text": "Go back to the explainer book and continue from there."
+    },
+    "match": {
+      "title": "Matching game",
+      "text": "Match each card to its meaning: tap a card on one side, then its meaning on the other. Every example comes from the book."
+    },
+    "order": {
+      "title": "Ordering game",
+      "text": "Put the steps of a process in the right order: tap the step that comes first, then the next. All steps come from the book."
+    }
+  },
+  "sort": {
+    "title": "Sorting game",
+    "round": "Round",
+    "left": "Left",
+    "howTo": "Drag the card to the right box, or tap the box.",
+    "roundDone": "Round complete!",
+    "nextRound": "Next round",
+    "finish": "Finish the game",
+    "doneTitle": "You finished the sorting game!",
+    "doneText": "You sorted every item in all {{count}} rounds."
+  },
+  "scenario": {
+    "title": "What would you do?",
+    "situation": "Situation",
+    "ask": "Is this right or wrong?",
+    "right": "Right",
+    "wrong": "Wrong",
+    "youRight": "You got it!",
+    "youWrong": "Not quite.",
+    "isRight": "Answer: right.",
+    "isWrong": "Answer: wrong.",
+    "next": "Next situation",
+    "finish": "Finish",
+    "doneTitle": "You finished \"What would you do?\"!",
+    "doneText": "Correct answers: {{score}} of {{total}}."
+  },
+  "match": {
+    "title": "Matching game",
+    "howTo": "Tap a card, then its meaning.",
+    "doneTitle": "You finished the matching game!",
+    "doneText": "You matched every card in all {{count}} rounds."
+  },
+  "order": {
+    "title": "Ordering game",
+    "yourOrder": "Your order",
+    "next": "Next step...",
+    "howTo": "Tap the steps in the right order.",
+    "doneTitle": "You finished the ordering game!",
+    "doneText": "You ordered every step in all {{count}} rounds."
+  }
+}

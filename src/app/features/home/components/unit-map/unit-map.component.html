@@ -1,0 +1,76 @@
+<section id="map" class="scroll-mt-20 py-[72px]">
+  <div class="mx-auto max-w-[1200px] px-6">
+    <div class="reveal mb-7 flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <h2 class="m-0 text-[clamp(26px,3.2vw,36px)] font-bold leading-tight">{{ 'home.map.title' | translate }}</h2>
+        <p class="mt-1.5 max-w-[560px] text-muted">{{ 'home.map.sub' | translate }}</p>
+      </div>
+      <div class="flex min-w-[230px] flex-col gap-1.5 text-[13px] text-muted">
+        <span>{{ 'home.map.progress' | translate: { done: doneCount(), total: total } }}</span>
+        <span class="h-[9px] overflow-hidden rounded-full border border-line bg-surface">
+          <i class="block h-full rounded-full bg-primary transition-[width]" [style.width.%]="donePercent()"></i>
+        </span>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 gap-4 min-[440px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      @for (card of cards(); track card.unit.id) {
+        <button
+          type="button"
+          class="unit reveal"
+          [class]="card.status"
+          [class.sel]="card.unit.id === selectedId()"
+          [attr.aria-pressed]="card.unit.id === selectedId()"
+          (click)="pick(card)"
+        >
+          <span class="mb-2 flex items-center justify-between">
+            <span class="badge">
+              @if (card.status === 'done') {
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="check" d="M4 12.5l5 5L20 6.5" /></svg>
+              } @else {
+                {{ card.unit.id }}
+              }
+            </span>
+            <span class="tag">
+              @if (card.status === 'locked') {
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2.5" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>
+              }
+              {{ 'home.map.tag.' + stateKey(card) | translate }}
+            </span>
+          </span>
+          <span class="text-[17px] font-bold leading-snug">{{ language.pick(card.unit.title) }}</span>
+          <span class="text-[13px] leading-normal text-muted">{{ language.pick(card.unit.topics) }}</span>
+        </button>
+      }
+    </div>
+
+    @let sel = selected();
+    <div class="detail mt-[18px] grid items-center gap-5 rounded-3xl border border-line bg-card p-[22px] md:grid-cols-[auto_minmax(0,1fr)_auto]">
+      <div class="min-w-16 text-center font-mono text-[40px] font-bold leading-none text-primary ltr-num">{{ sel.unit.id }}</div>
+      <div>
+        <p class="m-0 text-xl font-semibold">{{ language.pick(sel.unit.title) }}</p>
+        <div class="my-2 flex flex-wrap gap-2">
+          <span class="pill" [class]="sel.status">{{ 'home.map.status.' + stateKey(sel) | translate }}</span>
+          <span class="pill">{{ 'methods.' + sel.unit.method | translate }}</span>
+          <span class="pill">{{ 'home.map.bookPage' | translate: { page: sel.unit.bookPage } }}</span>
+        </div>
+        <p class="m-0 rounded-2xl bg-surface px-3.5 py-2.5 text-[15px]">{{ 'home.map.bito.' + stateKey(sel) | translate: params() }}</p>
+      </div>
+      <div>
+        @if (sel.link) {
+          <a
+            [routerLink]="sel.link"
+            class="inline-flex min-h-[50px] items-center rounded-[14px] px-[22px] font-semibold no-underline transition hover:-translate-y-0.5"
+            [class]="sel.status === 'current' ? 'bg-primary text-on-primary shadow-glow' : 'border border-line bg-card text-ink hover:bg-surface'"
+          >
+            {{ (sel.status === 'current' ? 'home.map.continue' : 'home.map.review') | translate: params() }}
+          </a>
+        } @else {
+          <button type="button" disabled class="inline-flex min-h-[50px] cursor-not-allowed items-center rounded-[14px] border border-line bg-card px-[22px] font-semibold text-ink opacity-55">
+            {{ (sel.status === 'locked' ? 'home.map.locked' : 'common.soon') | translate: params() }}
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+</section>

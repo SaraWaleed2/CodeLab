@@ -1,0 +1,50 @@
+.confetti {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 5;
+}
+i {
+  position: absolute;
+  top: -14px;
+  width: 8px;
+  height: 13px;
+  border-radius: 2px;
+  background: #f7c460;
+  animation: fall 1.8s cubic-bezier(0.3, 0.6, 0.5, 1) forwards;
+}
+i:nth-child(3n) { background: var(--cl-primary); }
+i:nth-child(4n) { background: #6ec6ff; }
+i:nth-child(5n) { background: #ff8fa3; }
+i:nth-child(1) { left: 4%; animation-delay: 0s; }
+i:nth-child(2) { left: 10%; animation-delay: 0.12s; }
+i:nth-child(3) { left: 16%; animation-delay: 0.05s; }
+i:nth-child(4) { left: 22%; animation-delay: 0.2s; }
+i:nth-child(5) { left: 28%; animation-delay: 0.08s; }
+i:nth-child(6) { left: 34%; animation-delay: 0.16s; }
+i:nth-child(7) { left: 40%; animation-delay: 0.02s; }
+i:nth-child(8) { left: 46%; animation-delay: 0.22s; }
+i:nth-child(9) { left: 52%; animation-delay: 0.1s; }
+i:nth-child(10) { left: 58%; animation-delay: 0.18s; }
+i:nth-child(11) { left: 64%; animation-delay: 0.04s; }
+i:nth-child(12) { left: 70%; animation-delay: 0.14s; }
+i:nth-child(13) { left: 76%; animation-delay: 0.24s; }
+i:nth-child(14) { left: 82%; animation-delay: 0.06s; }
+i:nth-child(15) { left: 88%; animation-delay: 0.17s; }
+i:nth-child(16) { left: 94%; animation-delay: 0.09s; }
+i:nth-child(17) { left: 13%; animation-delay: 0.3s; }
+i:nth-child(18) { left: 37%; animation-delay: 0.34s; }
+i:nth-child(19) { left: 61%; animation-delay: 0.28s; }
+i:nth-child(20) { left: 85%; animation-delay: 0.32s; }
+
+@keyframes fall {
+  from {
+    transform: translateY(0) rotate(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(560px) rotate(540deg);
+    opacity: 0;
+  }
+}

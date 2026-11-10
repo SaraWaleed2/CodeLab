@@ -1,0 +1,20 @@
+<div class="dock">
+  @if (bito.open()) {
+    <div class="bubble" [class.pop-a]="bito.count() % 2" [class.pop-b]="!(bito.count() % 2)" role="status" aria-live="polite">
+      <span class="who">{{ 'bito.name' | translate }}</span>
+      @if (key(); as k) {
+        {{ k.key | translate: k.params }}
+      } @else {
+        {{ contentText() }}
+      }
+      <button type="button" class="close" (click)="bito.close()" [attr.aria-label]="'common.close' | translate">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18" />
+        </svg>
+      </button>
+    </div>
+  }
+  <button type="button" class="bito-btn" (click)="bito.poke()" [attr.aria-label]="'bito.talk' | translate">
+    <app-bito [talking]="bito.talking()" [happy]="bito.happy()" />
+  </button>
+</div>

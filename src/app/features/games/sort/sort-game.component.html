@@ -1,0 +1,72 @@
+<section class="game relative overflow-hidden rounded-[26px] border border-line bg-card p-[26px]" [attr.aria-label]="'sort.title' | translate">
+  <app-confetti [burst]="burst()" />
+
+  @if (!finished()) {
+    @let r = round();
+    <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-1.5" [attr.aria-label]="'game.progress' | translate">
+        @for (x of rounds(); track $index; let i = $index) {
+          <span class="qd" [class.cur]="i === roundIndex()" [class.ok]="i < roundIndex()"></span>
+        }
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <span class="stat">{{ 'sort.round' | translate }} <b>{{ roundIndex() + 1 }}/{{ rounds().length }}</b></span>
+        <span class="stat">{{ 'sort.left' | translate }} <b>{{ left() }}</b></span>
+      </div>
+    </div>
+
+    <h2 class="m-0 text-[24px] font-bold">{{ language.pick(r.title) }}</h2>
+    <span class="mt-1 inline-block rounded-full bg-primary-soft px-3 py-0.5 text-[12.5px] text-primary">{{ language.pick(r.source) }}</span>
+
+    <div cdkDropListGroup class="mt-5 flex flex-col gap-5">
+      <!-- The item to sort -->
+      <div cdkDropList [cdkDropListData]="'source'" class="flex min-h-[92px] items-center justify-center">
+        @if (item(); as it) {
+          <div cdkDrag class="item" [attr.aria-label]="language.pick(it.text)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" class="opacity-50"><path d="M9 5h.01M15 5h.01M9 12h.01M15 12h.01M9 19h.01M15 19h.01" /></svg>
+            {{ language.pick(it.text) }}
+          </div>
+        } @else {
+          <div class="flex flex-col items-center gap-3 text-center">
+            <b class="text-xl">{{ 'sort.roundDone' | translate }}</b>
+            <button type="button" class="btn primary" (click)="nextRound()">
+              {{ (roundIndex() + 1 < rounds().length ? 'sort.nextRound' : 'sort.finish') | translate }}
+              <svg class="flip-rtl" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+            </button>
+          </div>
+        }
+      </div>
+
+      <p class="m-0 text-center text-[13px] text-muted">{{ 'sort.howTo' | translate }}</p>
+
+      <!-- The boxes -->
+      <div class="grid gap-3" [class]="r.bins.length === 2 ? 'sm:grid-cols-2' : r.bins.length === 4 ? 'grid-cols-2 lg:grid-cols-4' : 'sm:grid-cols-3'">
+        @for (bin of r.bins; track bin.id; let i = $index) {
+          <div
+            cdkDropList
+            [cdkDropListData]="bin.id"
+            (cdkDropListDropped)="onDrop($event)"
+            class="bin"
+            [attr.data-tone]="i"
+            [class.shake]="wrongBin() === bin.id"
+          >
+            <button type="button" class="bin-head" (click)="choose(bin.id)" [disabled]="!item()">
+              {{ language.pick(bin.label) }}
+            </button>
+            <div class="flex min-h-10 flex-wrap gap-1.5">
+              @for (p of placed()[bin.id] ?? []; track $index) {
+                <span class="chip">{{ language.pick(p) }}</span>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  } @else {
+    <div class="flex flex-col items-center gap-3 px-2.5 py-8 text-center">
+      <h2 class="m-0 text-[28px] font-bold">{{ 'sort.doneTitle' | translate }}</h2>
+      <p class="m-0 text-muted">{{ 'sort.doneText' | translate: { count: rounds().length } }}</p>
+      <button type="button" class="btn primary" (click)="restart()">{{ 'game.again' | translate }}</button>
+    </div>
+  }
+</section>

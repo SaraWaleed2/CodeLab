@@ -1,0 +1,24 @@
+<header class="glass sticky top-0 z-60 border-b">
+  <div class="mx-auto flex max-w-[1200px] flex-wrap items-center gap-3.5 px-6 py-2.5">
+    <app-logo />
+
+    <nav class="flex flex-wrap gap-0.5" [attr.aria-label]="'nav.label' | translate">
+      @for (link of links(); track link.label) {
+        <a
+          [routerLink]="link.path"
+          [fragment]="link.fragment"
+          routerLinkActive="!bg-surface !text-ink font-medium"
+          [routerLinkActiveOptions]="{ exact: link.exact }"
+          class="rounded-xl px-3 py-2 text-[15px] text-muted no-underline transition-colors hover:bg-surface hover:text-ink"
+          >{{ link.label | translate }}</a
+        >
+      }
+    </nav>
+
+    <div class="ms-auto flex flex-wrap items-center gap-2">
+      <app-points-badge />
+      <app-lang-toggle />
+      <app-theme-toggle />
+    </div>
+  </div>
+</header>

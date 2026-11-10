@@ -1,0 +1,110 @@
+@let c = challenge();
+<div class="mx-auto max-w-[1200px] animate-page-in px-6 pb-36 pt-7">
+  <nav class="mb-3.5 flex flex-wrap items-center gap-2.5 text-sm text-muted" [attr.aria-label]="'book.breadcrumb' | translate">
+    <a routerLink="/" class="text-muted">{{ 'nav.home' | translate }}</a>
+    <span>/</span>
+    <span>{{ 'code.crumb' | translate: { id: lesson().id } }}</span>
+  </nav>
+
+  @if (!hasChallenge()) {
+    <div class="mx-auto flex max-w-xl flex-col items-center gap-4 rounded-[26px] border border-line bg-card p-10 text-center">
+      <h1 class="m-0 text-2xl font-bold">{{ 'code.none.title' | translate }}</h1>
+      <p class="m-0 text-muted">{{ 'code.none.text' | translate }}</p>
+      <a routerLink="../play" class="inline-flex min-h-12 items-center rounded-[14px] bg-primary px-5 font-semibold text-on-primary no-underline shadow-glow">{{ 'code.none.toGame' | translate }}</a>
+    </div>
+  } @else {
+  <div class="grid items-start gap-6 lg:grid-cols-[minmax(0,380px)_minmax(0,1fr)]">
+    <aside class="flex flex-col gap-3.5 rounded-[26px] border border-line bg-card p-6">
+      <span class="self-start rounded-full bg-primary-soft px-3 py-1 text-[13px] font-medium text-primary">{{ 'code.eyebrow' | translate }}</span>
+      <h1 class="m-0 text-[26px] font-bold leading-snug">{{ language.pick(c.title) }}</h1>
+      <p class="m-0 text-[15px] text-muted">{{ language.pick(c.intro) }}</p>
+      <ul class="m-0 flex list-none flex-col gap-2 p-0 text-[14.5px]">
+        <li class="flex items-start gap-2.5"><i class="rule">✓</i>{{ 'code.rule1' | translate }}</li>
+        <li class="flex items-start gap-2.5"><i class="rule">✓</i>{{ 'code.rule2' | translate: { count: c.tests.length, inputs: inputsText() } }}</li>
+        <li class="flex items-start gap-2.5"><i class="rule no">✕</i><span>{{ 'code.rule3' | translate }} <span class="font-mono ltr-num">{{ c.banned.label }}</span></span></li>
+      </ul>
+      <span class="text-[12.5px] text-muted">{{ language.pick(c.source) }}</span>
+      @for (h of shownHints(); track $index; let i = $index) {
+        <div class="hint">
+          <b class="block text-xs font-semibold text-muted">{{ 'code.hint' | translate: { n: i + 1 } }}</b>
+          @if (i === 2) {
+            <code class="font-mono ltr-num">{{ h.en }}</code>
+          } @else {
+            {{ language.pick(h) }}
+          }
+        </div>
+      }
+      <a routerLink="../book" class="inline-flex items-center gap-2 font-semibold text-primary no-underline hover:underline">
+        <svg class="flip-rtl" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" /></svg>
+        {{ 'code.backToBook' | translate }}
+      </a>
+    </aside>
+
+    <section class="editor-card relative overflow-hidden rounded-[26px] border border-line bg-card" [attr.aria-label]="'code.editor' | translate">
+      <app-confetti [burst]="burst()" />
+      <div class="flex items-center justify-between gap-2.5 bg-[#0F1A20] px-3.5 py-2.5 text-[13px] text-[#A8C1C8]" dir="ltr">
+        <span class="flex gap-1.5" aria-hidden="true"><i class="dot"></i><i class="dot"></i><i class="dot"></i></span>
+        <span class="font-mono">{{ c.functionName }}.js</span>
+        <button type="button" class="reset" (click)="reset()">{{ 'code.reset' | translate }}</button>
+      </div>
+
+      <div class="grid grid-cols-[48px_minmax(0,1fr)] bg-[#13222A]" dir="ltr">
+        <div class="gutter" aria-hidden="true">
+          @for (l of lines(); track l.n) {
+            <span [class.marked]="l.marked">{{ l.n }}</span>
+          }
+        </div>
+        <textarea
+          class="code"
+          spellcheck="false"
+          autocomplete="off"
+          autocapitalize="off"
+          [rows]="lines().length"
+          [value]="code()"
+          (input)="onInput($event)"
+          (keydown)="onKeydown($event)"
+          [attr.aria-label]="'code.editor' | translate"
+        ></textarea>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2.5 border-t border-line bg-card p-3.5">
+        <button type="button" class="btn primary" (click)="run()" [disabled]="running()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+          {{ 'code.run' | translate }}
+        </button>
+        <button type="button" class="btn sun" (click)="hint()">
+          {{ hintLevel() >= 3 ? ('code.noHints' | translate) : ('code.askHint' | translate: { n: hintLevel() + 1 }) }}
+        </button>
+        <span class="ms-auto text-sm text-muted">{{ 'code.passed' | translate }} <b class="font-mono text-ink ltr-num">{{ passCount() }}/{{ c.tests.length }}</b></span>
+      </div>
+
+      @if (problem(); as p) {
+        <div class="msg bad">
+          {{ 'code.problem.' + p.kind | translate: { banned: c.banned.label, fn: c.functionName } }}
+          @if (p.message) {
+            <code class="font-mono ltr-num">{{ p.message }}</code>
+          }
+        </div>
+      }
+      @if (allPass()) {
+        <div class="msg ok">{{ 'code.allPass' | translate }}</div>
+      }
+
+      <div class="flex flex-col gap-2 bg-card px-3.5 pb-4">
+        <h3 class="mb-0.5 mt-1 text-[15px] font-bold">{{ 'code.tests' | translate }}</h3>
+        @for (t of c.tests; track $index; let i = $index) {
+          @let r = runs()?.[i];
+          <div class="grid grid-cols-2 items-center gap-2.5 rounded-[14px] bg-surface px-3 py-2.5 text-sm sm:grid-cols-[auto_minmax(0,1fr)_minmax(0,1fr)_auto]">
+            <span class="font-mono font-bold ltr-num">{{ c.functionName }}({{ t.input }})</span>
+            <span><span class="block text-[11.5px] text-muted">{{ 'code.expected' | translate }}</span><span class="font-mono break-all ltr-num">{{ expectedText(t.expected) }}</span></span>
+            <span><span class="block text-[11.5px] text-muted">{{ 'code.got' | translate }}</span><span class="font-mono break-all ltr-num">{{ r ? r.got : '—' }}</span></span>
+            <span class="status" [class.pass]="r?.ok" [class.fail]="r && !r.ok">
+              {{ (r ? (r.ok ? 'code.pass' : 'code.fail') : 'code.notRun') | translate }}
+            </span>
+          </div>
+        }
+      </div>
+    </section>
+  </div>
+}
+</div>

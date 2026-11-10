@@ -1,0 +1,87 @@
+/*
+ * CodeLab design tokens.
+ * Raw values live in CSS variables (--cl-*) and switch with the `.dark` class on <html>.
+ * The @theme block maps them to Tailwind utilities: bg-card, text-ink, border-line, bg-primary, bg-sun …
+ */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --cl-bg: #eef3f1;
+  --cl-card: #ffffff;
+  --cl-surface: #f4f7f6;
+  --cl-ink: #1b2b34;
+  --cl-muted: #4e6168;
+  --cl-line: #d5dfdc;
+  --cl-primary: #2f6f73;
+  --cl-on-primary: #ffffff;
+  --cl-primary-soft: rgb(47 111 115 / 0.1);
+  --cl-sun-soft: #fff4da;
+  --cl-ok: #2b7a4b;
+  --cl-ok-soft: #e3f3e8;
+  --cl-bad: #b03e2a;
+  --cl-bad-soft: #fbe7e2;
+  --cl-paper: #ffffff;
+  --cl-paper-edge: #f1efe8;
+  --cl-dot: rgb(27 43 52 / 0.1);
+  --cl-shadow: 0 18px 40px -22px rgb(16 40 44 / 0.35);
+  --cl-shadow-deep: 0 44px 90px -40px rgb(10 30 34 / 0.45), 0 2px 6px rgb(10 30 34 / 0.05);
+  --cl-glow: 0 1px 0 rgb(0 0 0 / 0.02);
+  color-scheme: light;
+}
+
+.dark {
+  --cl-bg: #14171c;
+  --cl-card: #1e2228;
+  --cl-surface: #262b33;
+  --cl-ink: #eef2f4;
+  --cl-muted: #9aa3ad;
+  --cl-line: #2c323b;
+  --cl-primary: #34c98e;
+  --cl-on-primary: #07261a;
+  --cl-primary-soft: rgb(52 201 142 / 0.12);
+  --cl-sun-soft: rgb(247 196 96 / 0.14);
+  --cl-ok: #4ed69a;
+  --cl-ok-soft: rgb(78 214 154 / 0.12);
+  --cl-bad: #ff8a73;
+  --cl-bad-soft: rgb(255 138 115 / 0.12);
+  --cl-paper: #1e2228;
+  --cl-paper-edge: #262b33;
+  --cl-dot: rgb(238 242 244 / 0.07);
+  --cl-shadow: 0 18px 40px -22px rgb(0 0 0 / 0.7);
+  --cl-shadow-deep: 0 48px 100px -36px rgb(0 0 0 / 0.8), -24px 36px 90px -50px rgb(52 201 142 / 0.35),
+    0 0 0 1px rgb(255 255 255 / 0.03);
+  --cl-glow: 0 0 0 1px rgb(52 201 142 / 0.2), 0 12px 40px -14px rgb(52 201 142 / 0.45);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--cl-bg);
+  --color-card: var(--cl-card);
+  --color-surface: var(--cl-surface);
+  --color-ink: var(--cl-ink);
+  --color-muted: var(--cl-muted);
+  --color-line: var(--cl-line);
+  --color-primary: var(--cl-primary);
+  --color-on-primary: var(--cl-on-primary);
+  --color-primary-soft: var(--cl-primary-soft);
+  --color-sun: #f7c460;
+  --color-on-sun: #2a2208;
+  --color-sun-soft: var(--cl-sun-soft);
+  --color-ok: var(--cl-ok);
+  --color-ok-soft: var(--cl-ok-soft);
+  --color-bad: var(--cl-bad);
+  --color-bad-soft: var(--cl-bad-soft);
+  --color-paper: var(--cl-paper);
+  --color-paper-edge: var(--cl-paper-edge);
+
+  --font-sans: 'Readex Pro', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --radius-card: 24px;
+  --radius-btn: 14px;
+
+  --shadow-soft: var(--cl-shadow);
+  --shadow-deep: var(--cl-shadow-deep);
+  --shadow-glow: var(--cl-glow);
+}
