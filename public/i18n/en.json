@@ -177,7 +177,8 @@
         "tools": "Play the bulbs game",
         "code": "Start the challenge"
       }
-    }
+    },
+    "developedBy": "Developed by Sara Waleed"
   },
   "book": {
     "breadcrumb": "Where you are",
@@ -191,7 +192,6 @@
     "goTo": "Go to page {{page}}",
     "keys": "Turn pages with the buttons, the folded corner, the dots, or the arrow keys.",
     "again": "Explain it again",
-    "listen": "Listen",
     "bookSays": "The book's answer:",
     "on": "On",
     "off": "Off",

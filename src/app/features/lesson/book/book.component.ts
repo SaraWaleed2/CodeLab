@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy, computed, inject, input,
 import { RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Lesson } from '@core/models';
-import { LanguageService, ProgressService, SpeechService } from '@core/services';
+import { LanguageService, ProgressService } from '@core/services';
 import { BitoComponent } from '@shared/ui/bito/bito.component';
 import { UNITS } from '@content/units';
 import { BookBlockComponent } from './blocks/book-block/book-block.component';
@@ -28,7 +28,6 @@ export class BookComponent implements OnDestroy {
 
   protected readonly language = inject(LanguageService);
   private readonly progress = inject(ProgressService);
-  private readonly speech = inject(SpeechService);
   private readonly translate = inject(TranslateService);
 
   protected readonly current = signal(0);
@@ -69,7 +68,6 @@ export class BookComponent implements OnDestroy {
 
   go(index: number): void {
     if (index < 0 || index > this.last() || index === this.current()) return;
-    this.speech.stop();
     this.current.set(index);
     this.seen.update((s) => new Set(s).add(index));
     if (index === this.last()) this.progress.markLesson(this.lesson().unitId, this.lesson().id, 'book');
@@ -110,11 +108,6 @@ export class BookComponent implements OnDestroy {
     this.talk(false);
   }
 
-  listen(): void {
-    this.speech.speak(this.bitoText(), this.language.lang());
-    this.talk(false);
-  }
-
   poke(): void {
     this.react('poke', true);
   }
@@ -149,6 +142,5 @@ export class BookComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     this.timers.forEach(clearTimeout);
-    this.speech.stop();
   }
 }
